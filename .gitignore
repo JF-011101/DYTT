@@ -1,0 +1,16 @@
+.lh
+output/
+.vscode/
+data/
+
+*.log
+
+local_*
+
+__debug_*
+
+*.yaml
+
+*.yml
+
+pkg/minio/
