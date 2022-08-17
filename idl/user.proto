@@ -1,6 +1,6 @@
 syntax = "proto3";
 package user;
-option go_package = "user";
+option go_package = "github.com/jf-011101/DYTT/grpc_gen/user";
 
 message douyin_user_register_request {
     string username = 1; // 注册用户名，最长32个字符

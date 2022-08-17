@@ -1,8 +1,8 @@
 syntax = "proto3";
 package feed;
-option go_package = "feed";
+option go_package = "github.com/jf-011101/DYTT/grpc_gen/feed";
 
-import "user.proto";
+import "github.com/jf-011101/DYTT/idl/user.proto";
 
 message douyin_feed_request {
     optional int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间

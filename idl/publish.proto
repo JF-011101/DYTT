@@ -1,8 +1,8 @@
 syntax = "proto3";
 package publish;
-option go_package = "publish";
+option go_package = "github.com/jf-011101/DYTT/grpc_gen/publish";
 
-import "feed.proto";
+import "github.com/jf-011101/DYTT/idl/feed.proto";
 
 message douyin_publish_action_request {
     string token = 1; // 用户鉴权token
