@@ -2,8 +2,8 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-07-02 14:03:26
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:45:22
- * @FilePath: \DYTT\pkg\ttviper\config.go
+ * @LastEditTime: 2022-08-19 23:05:08
+ * @FilePath: \dytt\pkg\ttviper\config.go
  * @Description: Viper configuration access initialization and code encapsulation
  */
 
@@ -17,12 +17,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/grpclog"
 )
 
 // Config
@@ -126,16 +126,16 @@ func (v *Config) WatchRemoteConf() {
 		// currently, only tested with etcd support
 		err := v.Viper.WatchRemoteConfig()
 		if err != nil {
-			klog.Errorf("unable to read remote config: %v\n", err)
+			grpclog.Errorf("unable to read remote config: %v\n", err)
 			continue
 		}
 
 		// unmarshal new config into our runtime config struct. you can also use channel
 		// to implement a signal to notify the system of the changes
 		//runtime_viper.Unmarshal(&runtime_conf)
-		klog.Info("Watching Remote Config")
-		klog.Infof("Global.Source: '%s'\n", v.Viper.GetString("Global.Source"))
-		klog.Infof("Global.ChangeMe: '%s'\n", v.Viper.GetString("Global.ChangeMe"))
+		grpclog.Info("Watching Remote Config")
+		grpclog.Infof("Global.Source: '%s'\n", v.Viper.GetString("Global.Source"))
+		grpclog.Infof("Global.ChangeMe: '%s'\n", v.Viper.GetString("Global.ChangeMe"))
 	}
 }
 
@@ -218,10 +218,10 @@ func ConfigInit(envPrefix string, cfgName string) Config {
 		*/
 
 		viper.SetConfigName(cfgName) //name of config file (without extension)
-		viper.AddConfigPath("/etc/tiktok/config")
-		viper.AddConfigPath("$HOME/.tiktok/")
-		viper.AddConfigPath("./config")
-		viper.AddConfigPath("../../config")
+		// viper.AddConfigPath("/etc/dytt/config")
+		// viper.AddConfigPath("$HOME/.dytt/")
+		viper.AddConfigPath("D:/gopath/src/github.com/jf-011101/dytt/config")
+		viper.AddConfigPath("$DYTT_ROOT/config")
 	}
 
 	if isRemoteConfig {

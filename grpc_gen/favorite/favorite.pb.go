@@ -8,7 +8,7 @@ package favorite
 
 import (
 	context "context"
-	feed "github.com/jf-011101/DYTT/grpc_gen/feed"
+	feed "github.com/jf-011101/dytt/grpc_gen/feed"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

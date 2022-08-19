@@ -2,17 +2,17 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-07-02 14:03:26
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:43:03
- * @FilePath: \DYTT\pkg\jwt\jwt.go
+ * @LastEditTime: 2022-08-19 22:26:22
+ * @FilePath: \dytt\pkg\jwt\jwt.go
  * @Description: be based on http://github.com/golang-jwt/jwt Code encapsulation of
  */
 
 package jwt
 
 import (
-	"github.com/jf-011101/errors"
+	"github.com/jf-011101/dytt/pkg/errors"
 
-	code "github.com/jf-011101/ErrorCode"
+	code "github.com/jf-011101/dytt/pkg/code"
 
 	"github.com/golang-jwt/jwt"
 )

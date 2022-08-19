@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:33:13
- * @FilePath: \DYTT\cmd\publish\command\publish_action.go
+ * @FilePath: \dytt\cmd\publish\command\publish_action.go
  * @Description:Publish video's operation business logic
  */
 
@@ -18,7 +18,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jf-011101/dytt/kitex_gen/publish"
+	"github.com/jf-011101/dytt/grpc_gen/publish"
 	"github.com/jf-011101/dytt/pkg/minio"
 	"github.com/jf-011101/dytt/pkg/ttviper"
 

@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:35:30
- * @FilePath: \DYTT\cmd\user\command\getUserByID.go
+ * @FilePath: \dytt\cmd\user\command\getUserByID.go
  * @Description: Business logic for obtaining user information
  */
 
@@ -13,7 +13,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jf-011101/dytt/kitex_gen/user"
+	"github.com/jf-011101/dytt/grpc_gen/user"
 	"gorm.io/gorm"
 
 	"github.com/jf-011101/dytt/dal/db"

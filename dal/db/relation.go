@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:07:00
- * @FilePath: \DYTT\dal\db\relation.go
+ * @FilePath: \dytt\dal\db\relation.go
  * @Description: Relation database operation business logic
  */
 

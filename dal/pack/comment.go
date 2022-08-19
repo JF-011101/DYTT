@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:39:13
- * @FilePath: \DYTT\dal\pack\comment.go
+ * @FilePath: \dytt\dal\pack\comment.go
  * @Description: Encapsulate comments database data as RPC server-side response
  */
 
@@ -13,7 +13,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jf-011101/dytt/kitex_gen/comment"
+	"github.com/jf-011101/dytt/grpc_gen/comment"
 	"gorm.io/gorm"
 
 	"github.com/jf-011101/dytt/dal/db"

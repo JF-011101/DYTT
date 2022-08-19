@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:35:45
- * @FilePath: \DYTT\cmd\user\command\login.go
+ * @FilePath: \dytt\cmd\user\command\login.go
  * @Description: Login operation business logic
  */
 
@@ -19,7 +19,7 @@ import (
 	"github.com/jf-011101/dytt/pkg/errno"
 	"golang.org/x/crypto/argon2"
 
-	"github.com/jf-011101/dytt/kitex_gen/user"
+	"github.com/jf-011101/dytt/grpc_gen/user"
 
 	"github.com/jf-011101/dytt/dal/db"
 )

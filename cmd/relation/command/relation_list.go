@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:34:37
- * @FilePath: \DYTT\cmd\relation\command\relation_list.go
+ * @FilePath: \dytt\cmd\relation\command\relation_list.go
  * @Description: Business logic for obtaining attention list operation
  */
 
@@ -13,8 +13,8 @@ import (
 	"context"
 
 	"github.com/jf-011101/dytt/dal/pack"
-	"github.com/jf-011101/dytt/kitex_gen/relation"
-	"github.com/jf-011101/dytt/kitex_gen/user"
+	"github.com/jf-011101/dytt/grpc_gen/relation"
+	"github.com/jf-011101/dytt/grpc_gen/user"
 
 	"github.com/jf-011101/dytt/dal/db"
 )

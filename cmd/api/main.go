@@ -2,8 +2,8 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-07-02 14:03:24
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:28:19
- * @FilePath: \DYTT\cmd\api\main.go
+ * @LastEditTime: 2022-08-19 22:33:22
+ * @FilePath: \dytt\cmd\api\main.go
  * @Description: Use the API service provided by gin to
  send the HTTP request to the RPC micro server
 */
@@ -21,10 +21,9 @@ import (
 	"go.uber.org/zap"
 
 	// jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/cloudwego/kitex/pkg/klog"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
-	"github.com/jf-011101/dytt/pkg/dlog"
+	"github.com/jf-011101/dytt/pkg/ilog"
 	"github.com/jf-011101/dytt/pkg/jwt"
 	"github.com/jf-011101/dytt/pkg/ttviper"
 )
@@ -45,10 +44,6 @@ func Init() {
 
 // 初始化 GIN API 及 Router
 func main() {
-	logger := dlog.InitLog()
-	defer logger.Sync()
-
-	zap.ReplaceGlobals(logger)
 
 	Init()
 
@@ -92,6 +87,6 @@ func main() {
 	relation.GET("/follower/list/", handlers.RelationFollowerList)
 
 	if err := http.ListenAndServe(ServiceAddr, r); err != nil {
-		klog.Fatal(err)
+		ilog.Fatal(err)
 	}
 }

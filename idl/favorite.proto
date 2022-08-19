@@ -1,8 +1,8 @@
 syntax = "proto3";
 package favorite;
-option go_package = "github.com/jf-011101/DYTT/grpc_gen/favorite";
+option go_package = "github.com/jf-011101/dytt/grpc_gen/favorite";
 
-import "github.com/jf-011101/DYTT/idl/feed.proto";
+import "github.com/jf-011101/dytt/idl/feed.proto";
 
 message douyin_favorite_action_request {
     int64 user_id = 1; // 用户id

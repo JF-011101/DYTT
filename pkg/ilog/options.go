@@ -1,4 +1,12 @@
-package log
+/*
+ * @Author: JF-011101 2838264218@qq.com
+ * @Date: 2022-08-19 20:26:23
+ * @LastEditors: JF-011101 2838264218@qq.com
+ * @LastEditTime: 2022-08-19 20:47:49
+ * @FilePath: \dytt\pkg\ilog\options.go
+ * @Description: define logs' levels and options
+ */
+package ilog
 
 import (
 	"bytes"
@@ -129,6 +137,7 @@ func WithFormatter(formatter Formatter) Option {
 	}
 }
 
+// WithDisableCaller sets whether to print file name and line number
 func WithDisableCaller(caller bool) Option {
 	return func(o *options) {
 		o.disableCaller = caller

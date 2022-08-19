@@ -3,7 +3,7 @@
  * @Date: 2022-06-12 14:03:24
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-06-18 10:59:08
- * @FilePath: \DYTT\cmd\api\handlers\comment.go
+ * @FilePath: \dytt\cmd\api\handlers\comment.go
  * @Description: define Comment API's handler
  */
 package handlers
@@ -15,7 +15,7 @@ import (
 	"github.com/jf-011101/dytt/pkg/errno"
 
 	"github.com/jf-011101/dytt/dal/pack"
-	"github.com/jf-011101/dytt/kitex_gen/comment"
+	"github.com/jf-011101/dytt/grpc_gen/comment"
 
 	"github.com/jf-011101/dytt/cmd/api/rpc"
 

@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:32:04
- * @FilePath: \DYTT\cmd\feed\command\feed.go
+ * @FilePath: \dytt\cmd\feed\command\feed.go
  * @Description: Video stream's operation business logic
  */
 
@@ -15,7 +15,7 @@ import (
 
 	"github.com/jf-011101/dytt/dal/pack"
 
-	"github.com/jf-011101/dytt/kitex_gen/feed"
+	"github.com/jf-011101/dytt/grpc_gen/feed"
 
 	"github.com/jf-011101/dytt/dal/db"
 )

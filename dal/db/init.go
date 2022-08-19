@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:06:46
- * @FilePath: \DYTT\dal\db\init.go
+ * @FilePath: \dytt\dal\db\init.go
  * @Description: init db
  */
 
@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jf-011101/dytt/pkg/dlog"
+	"github.com/jf-011101/dytt/pkg/ilog"
 	"github.com/jf-011101/dytt/pkg/ttviper"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
@@ -30,7 +30,7 @@ var (
 func InitDB() {
 	var err error
 
-	logger := zapgorm2.New(dlog.InitLog())
+	logger := zapgorm2.New(ilog.NewZapLog())
 	logger.SetAsDefault() // optional: configure gorm to use this zapgorm.Logger for callbacks
 
 	viper := Config.Viper

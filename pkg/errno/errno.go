@@ -3,7 +3,7 @@
  * @Date: 2022-08-15 11:37:19
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:42:47
- * @FilePath: \DYTT\pkg\errno\errno.go
+ * @FilePath: \dytt\pkg\errno\errno.go
  * @Description: Error code reporting business logic
  */
 

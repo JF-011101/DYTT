@@ -8,7 +8,7 @@ package feed
 
 import (
 	context "context"
-	user "github.com/jf-011101/DYTT/grpc_gen/user"
+	user "github.com/jf-011101/dytt/grpc_gen/user"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

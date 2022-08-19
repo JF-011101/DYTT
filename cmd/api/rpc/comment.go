@@ -2,8 +2,8 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-07-02 14:03:24
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:22:16
- * @FilePath: \DYTT\cmd\api\rpc\comment.go
+ * @LastEditTime: 2022-08-19 21:48:38
+ * @FilePath: \dytt\cmd\api\rpc\comment.go
  * @Description: Comment RPC client initialization
  and related RPC communication operation definitions
 */
@@ -15,54 +15,38 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cloudwego/kitex/client"
-	"github.com/cloudwego/kitex/pkg/retry"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	etcd "github.com/coreos/etcd/clientv3/naming"
-	"github.com/jf-011101/dytt/kitex_gen/comment"
-	"github.com/jf-011101/dytt/kitex_gen/comment/commentsrv"
+	// "github.com/cloudwego/kitex/client"
+	// "github.com/cloudwego/kitex/pkg/retry"
+	// "github.com/cloudwego/kitex/pkg/rpcinfo"
+
+	"github.com/jf-011101/dytt/grpc_gen/comment"
+	"github.com/jf-011101/dytt/pkg/discover"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"github.com/jf-011101/dytt/pkg/middleware"
+	"github.com/jf-011101/dytt/pkg/ilog"
 	"github.com/jf-011101/dytt/pkg/ttviper"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
-	"github.com/kitex-contrib/obs-opentelemetry/tracing"
+	"google.golang.org/grpc/resolver"
 )
 
-var commentClient commentsrv.Client
+var commentClient comment.CommentSrvClient
 
 // Comment RPC 客户端初始化
 func initCommentRpc(Config *ttviper.Config) {
 	EtcdAddress := fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
-	r, err := etcd.NewEtcdResolver([]string{EtcdAddress})
+	ServerAddress := fmt.Sprintf("%s:%d", Config.Viper.GetString("Server.Address"), Config.Viper.GetInt("Server.Port"))
+
+	// etcd注册
+	etcdRegister := discover.NewResolver([]string{EtcdAddress}, ilog.New())
+	resolver.Register(etcdRegister)
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	// RPC 连接
+	conn, err := RPCConnect(ctx, ServerAddress, etcdRegister)
 	if err != nil {
 		panic(err)
 	}
-	ServiceName := Config.Viper.GetString("Server.Name")
 
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName(ServiceName),
-		provider.WithExportEndpoint("localhost:4317"),
-		provider.WithInsecure(),
-	)
-	defer p.Shutdown(context.Background())
+	commentClient = comment.NewCommentSrvClient(conn)
 
-	c, err := commentsrv.NewClient(
-		ServiceName,
-		client.WithMiddleware(middleware.CommonMiddleware),
-		client.WithInstanceMW(middleware.ClientMiddleware),
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(30*time.Second),             // rpc timeout
-		client.WithConnectTimeout(30000*time.Millisecond), // conn timeout
-		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(tracing.NewClientSuite()),        // tracer
-		client.WithResolver(r),                            // resolver
-		// Please keep the same as provider.WithServiceName
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: ServiceName}),
-	)
-	if err != nil {
-		panic(err)
-	}
-	commentClient = c
 }
 
 // 传递 评论操作 的上下文, 并获取 RPC Server 端的响应.

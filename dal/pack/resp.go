@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:40:59
- * @FilePath: \DYTT\dal\pack\resp.go
+ * @FilePath: \dytt\dal\pack\resp.go
  * @Description: Encapsulate RPC server-side response
  */
 
@@ -14,12 +14,12 @@ import (
 
 	"github.com/jf-011101/dytt/pkg/errno"
 
-	"github.com/jf-011101/dytt/kitex_gen/comment"
-	"github.com/jf-011101/dytt/kitex_gen/favorite"
-	"github.com/jf-011101/dytt/kitex_gen/feed"
-	"github.com/jf-011101/dytt/kitex_gen/publish"
-	"github.com/jf-011101/dytt/kitex_gen/relation"
-	"github.com/jf-011101/dytt/kitex_gen/user"
+	"github.com/jf-011101/dytt/grpc_gen/comment"
+	"github.com/jf-011101/dytt/grpc_gen/favorite"
+	"github.com/jf-011101/dytt/grpc_gen/feed"
+	"github.com/jf-011101/dytt/grpc_gen/publish"
+	"github.com/jf-011101/dytt/grpc_gen/relation"
+	"github.com/jf-011101/dytt/grpc_gen/user"
 )
 
 // BuilduserRegisterResp build userRegisterResp from error

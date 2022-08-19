@@ -2,35 +2,26 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:34:01
- * @FilePath: \DYTT\cmd\publish\main.go
+ * @LastEditTime: 2022-08-19 22:10:27
+ * @FilePath: \dytt\cmd\publish\main.go
  * @Description: Publish RPC server initialization
  */
 
 package main
 
 import (
-	"context"
 	"fmt"
 	"net"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jf-011101/dytt/dal"
-	etcd "github.com/jf-011101/registry-etcd"
-	"moul.io/zapgorm2"
+	"github.com/jf-011101/dytt/grpc_gen/publish"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/resolver"
 
-	"github.com/cloudwego/kitex/pkg/limit"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	publish "github.com/jf-011101/dytt/kitex_gen/publish/publishsrv"
-	"github.com/jf-011101/dytt/pkg/dlog"
+	"github.com/jf-011101/dytt/pkg/discover"
+	"github.com/jf-011101/dytt/pkg/ilog"
 	"github.com/jf-011101/dytt/pkg/jwt"
-	"github.com/jf-011101/dytt/pkg/middleware"
 	"github.com/jf-011101/dytt/pkg/ttviper"
-
-	"github.com/cloudwego/kitex/server"
-
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
-	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 )
 
 var (
@@ -41,6 +32,10 @@ var (
 	Jwt         *jwt.JWT
 )
 
+type server struct {
+	publish.PublishSrvServer
+}
+
 // Publish RPC Server 端配置初始化
 func Init() {
 	dal.Init()
@@ -49,49 +44,21 @@ func Init() {
 
 // Publish RPC Server 端运行
 func main() {
-	var logger dlog.ZapLogger = dlog.ZapLogger{
-		Level: klog.LevelInfo,
-	}
-
-	zaplogger := zapgorm2.New(dlog.InitLog())
-	logger.SugaredLogger.Base = &zaplogger
-
-	klog.SetLogger(&logger)
-
-	defer logger.SugaredLogger.Base.ZapLogger.Sync()
-
-	r, err := etcd.NewEtcdRegistry([]string{EtcdAddress})
-	if err != nil {
-		klog.Fatal(err)
-	}
-	addr, err := net.ResolveTCPAddr("tcp", ServiceAddr)
-	if err != nil {
-		klog.Fatal(err)
-	}
-
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName(ServiceName),
-		provider.WithExportEndpoint("localhost:4317"),
-		provider.WithInsecure(),
-	)
-	defer p.Shutdown(context.Background())
+	// etcd注册
+	etcdRegister := discover.NewResolver([]string{EtcdAddress}, ilog.New())
+	resolver.Register(etcdRegister)
 
 	Init()
 
-	svr := publish.NewServer(
-		new(PublishSrvImpl),
-		server.WithServiceAddr(addr),                                       // address
-		server.WithMiddleware(middleware.CommonMiddleware),                 // middleware
-		server.WithMiddleware(middleware.ServerMiddleware),                 // middleware
-		server.WithRegistry(r),                                             // registry
-		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
-		server.WithMuxTransport(),                                          // Multiplex
-		server.WithSuite(tracing.NewServerSuite()),                         // trace
-		// Please keep the same as provider.WithServiceName
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: ServiceName}),
-	)
+	lis, err := net.Listen("tcp", ServiceAddr)
+	if err != nil {
+		ilog.Fatalf("failed to listen: %v", err)
+	}
 
-	if err := svr.Run(); err != nil {
-		klog.Fatalf("%s stopped with error:", ServiceName, err)
+	s := grpc.NewServer()
+	publish.RegisterPublishSrvServer(s, &server{})
+
+	if err := s.Serve(lis); err != nil {
+		ilog.Fatalf("%s stopped with error:", ServiceName, err)
 	}
 }

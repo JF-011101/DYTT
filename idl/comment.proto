@@ -1,8 +1,8 @@
 syntax = "proto3";
 package comment;
-option go_package = "github.com/jf-011101/DYTT/grpc_gen/comment";
+option go_package = "github.com/jf-011101/dytt/grpc_gen/comment";
 
-import "github.com/jf-011101/DYTT/idl/user.proto";
+import "github.com/jf-011101/dytt/idl/user.proto";
 
 message douyin_comment_action_request {
     int64 user_id = 1; // 用户id

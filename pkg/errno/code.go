@@ -2,15 +2,15 @@
  * @Author: JF-011101 2838264218@qq.com
  * @Date: 2022-08-15 11:37:19
  * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:42:31
- * @FilePath: \DYTT\pkg\errno\code.go
+ * @LastEditTime: 2022-08-19 22:22:38
+ * @FilePath: \dytt\pkg\errno\code.go
  * @Description: Error code, design logic: https://github.com/jf-011101/ErrnoCode
  */
 
 // 错误码
 package errno
 
-import code "github.com/jf-011101/ErrnoCode"
+import code "github.com/jf-011101/dytt/pkg/code"
 
 // HTTP Error
 var (

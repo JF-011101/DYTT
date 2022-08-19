@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:25
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:07:33
- * @FilePath: \DYTT\dal\pack\relation.go
+ * @FilePath: \dytt\dal\pack\relation.go
  * @Description: Encapsulate relation database data as RPC server-side response
  */
 
@@ -13,7 +13,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jf-011101/dytt/kitex_gen/user"
+	"github.com/jf-011101/dytt/grpc_gen/user"
 	"gorm.io/gorm"
 
 	"github.com/jf-011101/dytt/dal/db"

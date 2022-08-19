@@ -3,7 +3,7 @@
  * @Date: 2022-07-02 14:03:24
  * @LastEditors: JF-011101 2838264218@qq.com
  * @LastEditTime: 2022-07-21 11:29:49
- * @FilePath: \DYTT\cmd\comment\handler.go
+ * @FilePath: \dytt\cmd\comment\handler.go
  * @Description: Define relevant interfaces of comment RPC server side
  */
 
@@ -14,7 +14,7 @@ import (
 
 	"github.com/jf-011101/dytt/cmd/comment/command"
 	"github.com/jf-011101/dytt/dal/pack"
-	"github.com/jf-011101/dytt/kitex_gen/comment"
+	"github.com/jf-011101/dytt/grpc_gen/comment"
 	"github.com/jf-011101/dytt/pkg/errno"
 )
 
