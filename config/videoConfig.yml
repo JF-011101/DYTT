@@ -1,0 +1,24 @@
+Global:
+  Source: "config(local)"
+  ChangeMe: "v3"
+
+JWT:
+  signingKey: "signingKey"
+
+Etcd:
+  Address: "127.0.0.1"
+  Port: 2379
+
+Server:
+  Name: "TiktokFeedServer"
+  Address: "127.0.0.1"
+  Port: 8082
+
+Client:
+  Echo: true
+  Foo: "bar"
+  Servers:
+    - "127.0.0.1"
+    - "192.168.1.1"
+
+
