@@ -15,10 +15,6 @@ import (
 	"fmt"
 	"time"
 
-	// "github.com/cloudwego/kitex/client"
-	// "github.com/cloudwego/kitex/pkg/retry"
-	// "github.com/cloudwego/kitex/pkg/rpcinfo"
-
 	"github.com/jf-011101/dytt/grpc_gen/comment"
 	"github.com/jf-011101/dytt/pkg/discover"
 	"github.com/jf-011101/dytt/pkg/errno"

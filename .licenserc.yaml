@@ -9,7 +9,7 @@ header:
     - '**/*.thrift'
 
   paths-ignore:
-    - '**/kitex_gen/**'
+    - '**/grpc_gen/**'
     - '**/*.proto'
 
   comment: on-failure

@@ -5,10 +5,10 @@ Global:
 
 MySQL:
   Host: "127.0.0.1"
-  Port: 8091
-  User: "tiktok"
-  Password: "password"
-  DBName: "Tiktok"
+  Port: 3306
+  User: "root"
+  Password: "iam59!z$"
+  DBName: "dytt"
   CharSet: "utf8mb4"
   ParseTime: true
   loc: "Local"

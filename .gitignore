@@ -8,5 +8,7 @@ local_*
 
 __debug_*
 
+run.sh
 
+config/
 
