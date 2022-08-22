@@ -12,6 +12,7 @@ package handlers
 import (
 	"context"
 	"strconv"
+	"fmt"
 
 	"github.com/jf-011101/dytt/pkg/errno"
 
@@ -26,9 +27,9 @@ import (
 // 传递 点赞操作 的上下文至 Favorite 服务的 RPC 客户端, 并获取相应的响应.
 func FavoriteAction(c *gin.Context) {
 	var paramVar FavoriteActionParam
-	token := c.Query("token")
-	video_id := c.Query("video_id")
-	action_type := c.Query("action_type")
+	token := c.PostForm("token")
+	video_id := c.PostForm("video_id")
+	action_type := c.PostForm("action_type")
 
 	vid, err := strconv.Atoi(video_id)
 	if err != nil {

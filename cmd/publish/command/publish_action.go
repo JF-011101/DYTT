@@ -72,7 +72,7 @@ func (s *PublishActionService) PublishAction(req *publish.DouyinPublishActionReq
 
 	// 获取封面
 	coverPath := u3.String() + "." + "jpg"
-	coverData, err := readFrameAsJpeg(playUrl)
+	coverData, err := readFrameAsJpeg(url.String())
 	if err != nil {
 		return err
 	}

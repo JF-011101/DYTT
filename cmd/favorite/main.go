@@ -32,9 +32,6 @@ var (
 	Jwt         *jwt.JWT
 )
 
-type server struct {
-	favorite.FavoriteSrvServer
-}
 
 // Favorite RPC Server 端配置初始化
 func Init() {
@@ -56,7 +53,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	favorite.RegisterFavoriteSrvServer(s, &server{})
+	favorite.RegisterFavoriteSrvServer(s, &FavoriteSrvImpl{})
 
 	if err := s.Serve(lis); err != nil {
 		ilog.Fatalf("%s stopped with error:", ServiceName, err)

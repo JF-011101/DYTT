@@ -26,8 +26,8 @@ import (
 // 传递 注册用户操作 的上下文至 User 服务的 RPC 客户端, 并获取相应的响应.
 func Register(c *gin.Context) {
 	var registerVar UserRegisterParam
-	registerVar.UserName = c.Query("username")
-	registerVar.PassWord = c.Query("password")
+	registerVar.UserName = c.PostForm("username")
+	registerVar.PassWord = c.PostForm("password")
 
 	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
 		SendResponse(c, pack.BuilduserRegisterResp(errno.ErrBind))
@@ -48,8 +48,8 @@ func Register(c *gin.Context) {
 // 传递 注册用户登录操作 的上下文至 User 服务的 RPC 客户端, 并获取相应的响应.
 func Login(c *gin.Context) {
 	var registerVar UserRegisterParam
-	registerVar.UserName = c.Query("username")
-	registerVar.PassWord = c.Query("password")
+	registerVar.UserName = c.PostForm("username")
+	registerVar.PassWord = c.PostForm("password")
 
 	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
 		SendResponse(c, pack.BuilduserRegisterResp(errno.ErrBind))

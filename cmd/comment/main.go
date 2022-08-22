@@ -33,9 +33,6 @@ var (
 	Jwt         *jwt.JWT
 )
 
-type server struct {
-	comment.CommentSrvServer
-}
 
 // Comment RPC Server 端配置初始化
 func Init() {
@@ -58,7 +55,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	comment.RegisterCommentSrvServer(s, &server{})
+	comment.RegisterCommentSrvServer(s, &CommentSrvImpl{})
 
 	if err := s.Serve(lis); err != nil {
 		ilog.Fatalf("%s stopped with error:", ServiceName, err)

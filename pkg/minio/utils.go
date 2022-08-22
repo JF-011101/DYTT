@@ -24,8 +24,8 @@ func CreateBucket(bucketName string) error {
 	if len(bucketName) <= 0 {
 		ilog.Error("bucketName invalid")
 	}
-
-	location := "beijing"
+	// location: https://cloud.google.com/storage/docs/locations
+	location := "asia-east2"
 	ctx := context.Background()
 
 	err := minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})

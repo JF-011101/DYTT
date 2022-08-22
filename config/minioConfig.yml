@@ -3,8 +3,8 @@ Global:
   ChangeMe: "v3"
 
 Minio:
-  Endpoint: 192.168.123.12:9000
-  AccessKeyId: tiktokMinio
-  SecretAccessKey: tiktokMinio
+  Endpoint: 127.0.0.1:9000
+  AccessKeyId: minioadmin
+  SecretAccessKey: minioadmin
   UseSSL: false
-  VideoBucketName : tiktok-video
+  VideoBucketName : dytt-video3

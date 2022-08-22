@@ -12,13 +12,14 @@ package db
 import (
 	"fmt"
 	"time"
+	"log"
+	"os"
 
-	"github.com/jf-011101/dytt/pkg/ilog"
 	"github.com/jf-011101/dytt/pkg/ttviper"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"moul.io/zapgorm2"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -30,8 +31,6 @@ var (
 func InitDB() {
 	var err error
 
-	logger := zapgorm2.New(ilog.NewZapLog())
-	logger.SetAsDefault() // optional: configure gorm to use this zapgorm.Logger for callbacks
 
 	viper := Config.Viper
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s",
@@ -44,6 +43,16 @@ func InitDB() {
 		viper.GetBool("mysql.parseTime"),
 		viper.GetString("mysql.loc"),
 	)
+
+	logger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Info, // level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  true,       // color
+		},
+	)
 	DB, err = gorm.Open(mysql.Open(dsn),
 		&gorm.Config{
 			// PrepareStmt: true,
@@ -52,24 +61,24 @@ func InitDB() {
 		},
 	)
 	if err != nil {
-		logger.ZapLogger.Panic(err.Error())
+		log.Panic(err.Error())
 	}
 
 	if err = DB.Use(otelgorm.NewPlugin()); err != nil {
-		logger.ZapLogger.Panic(err.Error())
+		log.Panic(err.Error())
 	}
 
-	if err := DB.AutoMigrate(&User{}, &Video{}, &Comment{}, &Relation{}); err != nil {
-		logger.ZapLogger.Panic(err.Error())
-	}
+	// if err := DB.AutoMigrate(&User{}, &Video{}, &Comment{}, &Relation{}); err != nil {
+	// 	log.Panic(err.Error())
+	// }
 
 	sqlDB, err := DB.DB()
 	if err != nil {
-		logger.ZapLogger.Panic(err.Error())
+		log.Panic(err.Error())
 	}
 
 	if err := sqlDB.Ping(); err != nil {
-		logger.ZapLogger.Panic(err.Error())
+		log.Panic(err.Error())
 	}
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxIdleConns(viper.GetInt("mysql.maxIdleConns"))

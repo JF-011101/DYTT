@@ -25,9 +25,9 @@ import (
 // 传递 评论操作 的上下文至 Comment 服务的 RPC 客户端, 并获取相应的响应.
 func CommentAction(c *gin.Context) {
 	var paramVar CommentActionParam
-	token := c.Query("token")
-	video_id := c.Query("video_id")
-	action_type := c.Query("action_type")
+	token := c.PostForm("token")
+	video_id := c.PostForm("video_id")
+	action_type := c.PostForm("action_type")
 
 	vid, err := strconv.Atoi(video_id)
 	if err != nil {
@@ -51,10 +51,10 @@ func CommentAction(c *gin.Context) {
 	}
 
 	if act == 1 {
-		comment_text := c.Query("comment_text")
+		comment_text := c.PostForm("comment_text")
 		rpcReq.CommentText = &comment_text
 	} else {
-		comment_id := c.Query("comment_id")
+		comment_id := c.PostForm("comment_id")
 		cid, err := strconv.Atoi(comment_id)
 		if err != nil {
 			SendResponse(c, pack.BuildCommentActionResp(errno.ErrBind))

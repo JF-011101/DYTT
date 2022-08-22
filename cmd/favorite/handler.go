@@ -12,6 +12,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/cmd/favorite/command"
 	"github.com/jf-011101/dytt/dal/pack"
@@ -41,6 +42,7 @@ func (s *FavoriteSrvImpl) FavoriteAction(ctx context.Context, req *favorite.Douy
 
 	err = command.NewFavoriteActionService(ctx).FavoriteAction(req)
 	if err != nil {
+		fmt.Print("iuhiuh")
 		resp = pack.BuildFavoriteActionResp(err)
 		return resp, nil
 	}

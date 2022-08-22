@@ -6,8 +6,8 @@ Global:
 MySQL:
   Host: "127.0.0.1"
   Port: 3306
-  User: "root"
-  Password: "iam59!z$"
+  User: "dyttdb"
+  Password: "dytt!$"
   DBName: "dytt"
   CharSet: "utf8mb4"
   ParseTime: true

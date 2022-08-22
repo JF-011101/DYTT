@@ -44,7 +44,6 @@ func Init() {
 
 // 初始化 GIN API 及 Router
 func main() {
-
 	Init()
 
 	r := gin.New()

@@ -33,10 +33,6 @@ var (
 	Argon2Config *command.Argon2Params
 )
 
-type server struct {
-	user.UserSrvServer
-}
-
 // User RPC Server 端配置初始化
 func Init() {
 	dal.Init()
@@ -64,7 +60,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	user.RegisterUserSrvServer(s, &server{})
+	user.RegisterUserSrvServer(s, &UserSrvImpl{})
 
 	if err := s.Serve(lis); err != nil {
 		ilog.Fatalf("%s stopped with error:", ServiceName, err)

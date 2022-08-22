@@ -26,9 +26,9 @@ import (
 // 传递 关注操作 的上下文至 Relation 服务的 RPC 客户端, 并获取相应的响应.
 func RelationAction(c *gin.Context) {
 	var paramVar RelationActionParam
-	token := c.Query("token")
-	to_user_id := c.Query("to_user_id")
-	action_type := c.Query("action_type")
+	token := c.PostForm("token")
+	to_user_id := c.PostForm("to_user_id")
+	action_type := c.PostForm("action_type")
 
 	tid, err := strconv.Atoi(to_user_id)
 	if err != nil {

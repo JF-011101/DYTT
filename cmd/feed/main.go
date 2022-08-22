@@ -31,9 +31,6 @@ var (
 	Jwt         *jwt.JWT
 )
 
-type server struct {
-	feed.FeedSrvServer
-}
 
 // Feed RPC Server 端配置初始化
 func Init() {
@@ -55,7 +52,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	feed.RegisterFeedSrvServer(s, &server{})
+	feed.RegisterFeedSrvServer(s, &FeedSrvImpl{})
 
 	if err := s.Serve(lis); err != nil {
 		ilog.Fatalf("%s stopped with error:", ServiceName, err)

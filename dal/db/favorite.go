@@ -11,6 +11,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/pkg/errno"
 	"gorm.io/gorm"
@@ -36,6 +37,7 @@ func GetFavoriteRelation(ctx context.Context, uid int64, vid int64) (*Video, err
 
 // Favorite new favorite data.
 func Favorite(ctx context.Context, uid int64, vid int64) error {
+	fmt.Print("-----------------",ctx)
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
 		//1. 新增点赞数据
@@ -46,19 +48,27 @@ func Favorite(ctx context.Context, uid int64, vid int64) error {
 
 		video := new(Video)
 		if err := tx.WithContext(ctx).First(video, vid).Error; err != nil {
+			fmt.Print("1211",err)
+
 			return err
 		}
 
 		if err := tx.WithContext(ctx).Model(&user).Association("FavoriteVideos").Append(video); err != nil {
+			fmt.Print("1131",err)
+
 			return err
 		}
 		//2.改变 video 表中的 favorite count
 		res := tx.Model(video).Update("favorite_count", gorm.Expr("favorite_count + ?", 1))
 		if res.Error != nil {
+			fmt.Print("1141",res.Error)
+
 			return res.Error
 		}
 
 		if res.RowsAffected != 1 {
+			fmt.Print("1511",errno.ErrDatabase)
+
 			return errno.ErrDatabase
 		}
 

@@ -24,10 +24,6 @@ import (
 	"github.com/jf-011101/dytt/pkg/ttviper"
 )
 
-type server struct {
-	relation.RelationSrvServer
-}
-
 var (
 	Config      = ttviper.ConfigInit("TIKTOK_RELATION", "relationConfig")
 	ServiceName = Config.Viper.GetString("Server.Name")
@@ -56,7 +52,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	relation.RegisterRelationSrvServer(s, &server{})
+	relation.RegisterRelationSrvServer(s, &RelationSrvImpl{})
 
 	if err := s.Serve(lis); err != nil {
 		ilog.Fatalf("%s stopped with error:", ServiceName, err)
