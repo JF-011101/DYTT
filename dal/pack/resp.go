@@ -1,8 +1,8 @@
 /*
- * @Author: JF-011101 2838264218@qq.com
- * @Date: 2022-07-02 14:03:25
- * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:40:59
+ * @Author: jf-011101 2838264218@qq.com
+ * @Date: 2022-08-02 14:03:25
+ * @LastEditors: jf-011101 2838264218@qq.com
+ * @LastEditTime: 2022-08-21 11:40:59
  * @FilePath: \dytt\dal\pack\resp.go
  * @Description: Encapsulate RPC server-side response
  */
@@ -70,7 +70,6 @@ func BuildVideoResp(err error) *feed.DouyinFeedResponse {
 	if errors.As(err, &e) {
 		return videoResp(e)
 	}
-
 	s := errno.ErrUnknown.WithMessage(err.Error())
 	return videoResp(s)
 }

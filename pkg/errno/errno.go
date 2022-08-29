@@ -1,8 +1,8 @@
 /*
- * @Author: JF-011101 2838264218@qq.com
+ * @Author: jf-011101 2838264218@qq.com
  * @Date: 2022-08-15 11:37:19
- * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:42:47
+ * @LastEditors: jf-011101 2838264218@qq.com
+ * @LastEditTime: 2022-08-21 11:42:47
  * @FilePath: \dytt\pkg\errno\errno.go
  * @Description: Error code reporting business logic
  */

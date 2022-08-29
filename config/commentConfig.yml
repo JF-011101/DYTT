@@ -9,6 +9,15 @@ Etcd:
   Address: "127.0.0.1"
   Port: 2379
 
+TLS:
+  Name: "dytt-ca"
+  CertFileLocalAddr: "../../config/cert/comment/dytt-comment.pem"
+  KeyFileLocalAddr: "../../config/cert/comment/dytt-comment-key.pem"
+
+ZIPKIN:
+  Name: "dytt-comment-srv"
+  endpoint: "127.0.0.1:9411"
+
 Server:
   Name: "TiktokCommentServer"
   Address: "127.0.0.1"

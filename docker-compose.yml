@@ -7,8 +7,8 @@ x-minio-common: &minio-common
     - "9000"
     - "9001"
   environment:
-    MINIO_ROOT_USER: tiktokMinio
-    MINIO_ROOT_PASSWORD: tiktokMinio
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin
   healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
     interval: 30s
@@ -21,9 +21,9 @@ services:
     ports:
       - 8091:3306
     environment:
-      - MYSQL_DATABASE=Tiktok
-      - MYSQL_USER=tiktok
-      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=dytt
+      - MYSQL_USER=youruser
+      - MYSQL_PASSWORD=yourpassword
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
 
   Etcd:
@@ -33,20 +33,12 @@ services:
     ports:
       - 2379:2379
 
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib-dev:latest
-    command: [ "--config=/etc/otel-collector-config.yml", "${OTELCOL_ARGS}" ]
-    volumes:
-      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yml
+  Zipkin:
+    image: 'openzipkin/zipkin:latest'
     ports:
-      - "1888:1888"   # pprof extension
-      - "8888:8888"   # Prometheus metrics exposed by the collector
-      - "8889:8889"   # Prometheus exporter metrics
-      - "13133:13133" # health_check extension
-      - "4317:4317"   # OTLP gRPC receiver
-      - "55670:55679" # zpages extension
-    depends_on:
-      - jaeger-all-in-one
+      - 9411:9411
+
+
 
 
 

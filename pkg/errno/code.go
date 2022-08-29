@@ -1,7 +1,7 @@
 /*
- * @Author: JF-011101 2838264218@qq.com
+ * @Author: jf-011101 2838264218@qq.com
  * @Date: 2022-08-15 11:37:19
- * @LastEditors: JF-011101 2838264218@qq.com
+ * @LastEditors: jf-011101 2838264218@qq.com
  * @LastEditTime: 2022-08-19 22:22:38
  * @FilePath: \dytt\pkg\errno\code.go
  * @Description: Error code, design logic: https://github.com/jf-011101/ErrnoCode
@@ -10,7 +10,7 @@
 // 错误码
 package errno
 
-import code "github.com/jf-011101/dytt/pkg/code"
+import code "github.com/jf-011101/dytt/third_party/forked/code"
 
 // HTTP Error
 var (

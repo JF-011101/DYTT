@@ -1,0 +1,56 @@
+[going@dev dytt]$ tree config
+config
+├── apiConfig.yml
+├── cert
+│   ├── api
+│   │   ├── api-csr.json
+│   │   ├── dytt-api.csr
+│   │   ├── dytt-api-key.pem
+│   │   └── dytt-api.pem
+│   ├── ca-config.json
+│   ├── ca.csr
+│   ├── ca-csr.json
+│   ├── ca-key.pem
+│   ├── ca.pem
+│   ├── comment
+│   │   ├── comment-csr.json
+│   │   ├── dytt-comment.csr
+│   │   ├── dytt-comment-key.pem
+│   │   └── dytt-comment.pem
+│   ├── favorite
+│   │   ├── dytt-favorite.csr
+│   │   ├── dytt-favorite-key.pem
+│   │   ├── dytt-favorite.pem
+│   │   └── favorite-csr.json
+│   ├── feed
+│   │   ├── dytt-feed.csr
+│   │   ├── dytt-feed-key.pem
+│   │   ├── dytt-feed.pem
+│   │   └── feed-csr.json
+│   ├── publish
+│   │   ├── dytt-publish.csr
+│   │   ├── dytt-publish-key.pem
+│   │   ├── dytt-publish.pem
+│   │   └── publish-csr.json
+│   ├── relation
+│   │   ├── dytt-relation.csr
+│   │   ├── dytt-relation-key.pem
+│   │   ├── dytt-relation.pem
+│   │   └── relation-csr.json
+│   └── user
+│       ├── dytt-user.csr
+│       ├── dytt-user-key.pem
+│       ├── dytt-user.pem
+│       └── user-csr.json
+├── commentConfig.yml
+├── dbConfig.yml
+├── favoriteConfig.yml
+├── feedConfig.yml
+├── logConfig.yml
+├── minioConfig.yml
+├── nginx.conf
+├── publishConfig.yml
+├── relationConfig.yml
+├── sql
+│   └── dytt.sql
+└── userConfig.yml

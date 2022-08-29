@@ -7,4 +7,4 @@ Minio:
   AccessKeyId: minioadmin
   SecretAccessKey: minioadmin
   UseSSL: false
-  VideoBucketName : dytt-video3
+  VideoBucketName : dytt-video

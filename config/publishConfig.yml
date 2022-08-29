@@ -9,6 +9,15 @@ Etcd:
   Address: "127.0.0.1"
   Port: 2379
 
+TLS:
+  Name: "dytt-ca"
+  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/publish/dytt-publish.pem"
+  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/publish/dytt-publish-key.pem"
+
+ZIPKIN:
+  Name: "dytt-publish-srv"
+  endpoint: "127.0.0.1:9411"
+
 Server:
   Name: "TiktokPublishServer"
   Address: "127.0.0.1"

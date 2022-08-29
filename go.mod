@@ -8,24 +8,30 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go/v7 v7.0.34
 	github.com/novalagung/gubrak v1.0.0
+	github.com/openzipkin/zipkin-go v0.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.12.0
 	github.com/u2takey/ffmpeg-go v0.4.1
 	github.com/uptrace/opentelemetry-go-extra/otelgorm v0.1.15
 	go.etcd.io/etcd/client/v3 v3.5.4
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.34.0
 	go.uber.org/zap v1.22.0
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
 	golang.org/x/tools v0.1.12
-	google.golang.org/grpc v1.48.0
+	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.23.8
+)
+
+require (
+	github.com/gorilla/mux v1.7.3 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 )
 
 require (

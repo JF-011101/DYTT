@@ -1,8 +1,8 @@
 /*
- * @Author: JF-011101 2838264218@qq.com
- * @Date: 2022-07-02 14:03:25
- * @LastEditors: JF-011101 2838264218@qq.com
- * @LastEditTime: 2022-07-21 11:06:46
+ * @Author: jf-011101 2838264218@qq.com
+ * @Date: 2022-08-02 14:03:25
+ * @LastEditors: jf-011101 2838264218@qq.com
+ * @LastEditTime: 2022-08-21 11:06:46
  * @FilePath: \dytt\dal\db\init.go
  * @Description: init db
  */
@@ -11,11 +11,11 @@ package db
 
 import (
 	"fmt"
-	"time"
 	"log"
 	"os"
+	"time"
 
-	"github.com/jf-011101/dytt/pkg/ttviper"
+	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -30,7 +30,6 @@ var (
 // Init init DB
 func InitDB() {
 	var err error
-
 
 	viper := Config.Viper
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s",
@@ -50,7 +49,7 @@ func InitDB() {
 			SlowThreshold:             time.Second, // Slow SQL threshold
 			LogLevel:                  logger.Info, // level
 			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-			Colorful:                  true,       // color
+			Colorful:                  true,        // color
 		},
 	)
 	DB, err = gorm.Open(mysql.Open(dsn),
