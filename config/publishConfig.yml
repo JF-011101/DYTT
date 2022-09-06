@@ -11,13 +11,14 @@ Etcd:
 
 TLS:
   Name: "dytt-ca"
-  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/publish/dytt-publish.pem"
-  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/publish/dytt-publish-key.pem"
+  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/publish/dytt-publish.pem"
+  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/publish/dytt-publish-key.pem"
 
 ZIPKIN:
-  Name: "dytt-publish-srv"
-  endpoint: "127.0.0.1:9411"
-
+  SrvName: "dytt-publish-srv"
+  CliName: "dytt-publish-cli"
+  Url: "http://localhost:9411/api/v2/spans"
+  Port: "127.0.0.1:8084"
 Server:
   Name: "TiktokPublishServer"
   Address: "127.0.0.1"

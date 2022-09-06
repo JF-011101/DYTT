@@ -3,7 +3,7 @@
  * @Date: 2022-08-10 14:03:26
  * @LastEditors: jf-011101 2838264218@qq.com
  * @LastEditTime: 2022-08-16 11:44:36
- * @FilePath: \DYTT\pkg\minio\init.go
+ * @FilePath: \dytt\pkg\minio\init.go
  * @Description: Minio object storage initialization
  */
 
@@ -35,7 +35,6 @@ func init() {
 	if err != nil {
 		ilog.Errorf("minio client init failed: %v", err)
 	}
-	// fmt.Println(client)
 	ilog.Debug("minio client init successfully")
 	minioClient = client
 	if err := CreateBucket(MinioVideoBucketName); err != nil {

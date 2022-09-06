@@ -3,7 +3,7 @@
  * @Date: 2022-08-10 14:03:26
  * @LastEditors: jf-011101 2838264218@qq.com
  * @LastEditTime: 2022-08-16 11:44:58
- * @FilePath: \DYTT\pkg\minio\minio_test.go
+ * @FilePath: \dytt\pkg\minio\minio_test.go
  * @Description: minio test
  */
 

@@ -11,13 +11,14 @@ Etcd:
 
 TLS:
   Name: "dytt-ca"
-  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/relation/dytt-relation.pem"
-  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/relation/dytt-relation-key.pem"
+  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/relation/dytt-relation.pem"
+  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/relation/dytt-relation-key.pem"
 
 ZIPKIN:
-  Name: "dytt-relation-srv"
-  endpoint: "127.0.0.1:9411"
-
+  SrvName: "dytt-relation-srv"
+  CliName: "dytt-relation-cli"
+  Url: "http://localhost:9411/api/v2/spans"
+  Port: "127.0.0.1:8087"
 Server:
   Name: "TiktokRelationServer"
   Address: "127.0.0.1"

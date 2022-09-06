@@ -11,13 +11,14 @@ Etcd:
 
 TLS:
   Name: "dytt-ca"
-  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/favorite/dytt-favorite.pem"
-  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/DYTT/config/cert/favorite/dytt-favorite-key.pem"
+  CertFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/favorite/dytt-favorite.pem"
+  KeyFileLocalAddr: "/home/going/workspace/golang/src/github.com/jf-011101/dytt/config/cert/favorite/dytt-favorite-key.pem"
 
 ZIPKIN:
-  Name: "dytt-favorite-srv"
-  endpoint: "127.0.0.1:9411"
-
+  SrvName: "dytt-favorite-srv"
+  CliName: "dytt-favorite-cli"
+  Url: "http://localhost:9411/api/v2/spans"
+  Port: "127.0.0.1:8085"
 Server:
   Name: "TiktokFavoriteServer"
   Address: "127.0.0.1"

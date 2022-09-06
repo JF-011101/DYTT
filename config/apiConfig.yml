@@ -8,11 +8,6 @@ JWT:
 Etcd:
   - Address: "127.0.0.1"
     Port: 2379
-    
-ZIPKIN:
-  Name: "dytt-zipkin-srv"
-  endpoint: "127.0.0.1:9411"
-
 
 Server:
   Name: "TiktokAPIServer"

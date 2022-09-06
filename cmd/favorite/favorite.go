@@ -11,7 +11,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -21,9 +20,7 @@ import (
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	zipkin "github.com/openzipkin/zipkin-go"
 	zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
-	logreporter "github.com/openzipkin/zipkin-go/reporter/log"
 	"google.golang.org/grpc"
 
 	"github.com/jf-011101/dytt/dal"
@@ -33,31 +30,30 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/gtls"
 	"github.com/jf-011101/dytt/internal/pkg/ilog"
 	my_grpc_middleware "github.com/jf-011101/dytt/internal/pkg/middleware/grpc"
+	"github.com/jf-011101/dytt/internal/pkg/tracing"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 )
 
 var (
-	Config               = ttviper.ConfigInit("TIKTOK_FAVORITE", "favoriteConfig")
-	ServiceName          = Config.Viper.GetString("Server.Name")
-	ServiceAddr          = fmt.Sprintf("%s:%d", Config.Viper.GetString("Server.Address"), Config.Viper.GetInt("Server.Port"))
-	EtcdAddress          = fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
-	CertFile             = Config.Viper.GetString("TLS.CertFileLocalAddr")
-	KeyFile              = Config.Viper.GetString("TLS.KeyFileLocalAddr")
-	ZIPKIN_NAME          = Config.Viper.GetString("ZIPKIN.name")
-	ZIPKIN_HTTP_ENDPOINT = Config.Viper.GetString("ZIPKIN.endpoint")
+	Config          = ttviper.ConfigInit("TIKTOK_FAVORITE", "favoriteConfig")
+	ServiceName     = Config.Viper.GetString("Server.Name")
+	ServiceAddr     = fmt.Sprintf("%s:%d", Config.Viper.GetString("Server.Address"), Config.Viper.GetInt("Server.Port"))
+	EtcdAddress     = fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
+	CertFile        = Config.Viper.GetString("TLS.CertFileLocalAddr")
+	KeyFile         = Config.Viper.GetString("TLS.KeyFileLocalAddr")
+	ZIPKIN_SRV_NAME = Config.Viper.GetString("ZIPKIN.SrvName")
+	ZIPKIN_URL      = Config.Viper.GetString("ZIPKIN.Url")
+	ZIPKIN_PORT     = Config.Viper.GetString("ZIPKIN.Port")
 )
 
-// Favorite RPC Server 端配置初始化
 func Init() {
 	dal.Init()
 }
 
-// Favorite RPC Server 端运行
 func main() {
 
 	Init()
 
-	// 服务注册
 	etcdRegister := discovery.NewRegister([]string{EtcdAddress}, ilog.New(ilog.WithLevel(ilog.InfoLevel),
 		ilog.WithFormatter(&ilog.JsonFormatter{IgnoreBasicFields: false}),
 	))
@@ -76,18 +72,10 @@ func main() {
 		ilog.Fatalf("tlsServer.GetTLSCredentials err: %v", err)
 	}
 
-	// set up a span reporter
-	reporter := logreporter.NewReporter(log.New(os.Stderr, "", log.LstdFlags))
-	defer reporter.Close()
-	// create our local service endpoint
-	endpoint, err := zipkin.NewEndpoint(ZIPKIN_NAME, ZIPKIN_HTTP_ENDPOINT)
+	tracer, _, err := tracing.NewZipkinTracer(ZIPKIN_URL, ZIPKIN_SRV_NAME, ZIPKIN_PORT)
+
 	if err != nil {
-		ilog.Fatalf("unable to create local endpoint: %+v\n", err)
-	}
-	// initialize our tracer
-	tracer, err := zipkin.NewTracer(reporter, zipkin.WithLocalEndpoint(endpoint))
-	if err != nil {
-		ilog.Fatalf("unable to create tracer: %+v\n", err)
+		ilog.Fatalf("unable to create zipkin tracer: %+v\n", err)
 	}
 
 	s := grpc.NewServer(grpc.Creds(c), grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer)), grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(

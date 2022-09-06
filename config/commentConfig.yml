@@ -15,9 +15,10 @@ TLS:
   KeyFileLocalAddr: "../../config/cert/comment/dytt-comment-key.pem"
 
 ZIPKIN:
-  Name: "dytt-comment-srv"
-  endpoint: "127.0.0.1:9411"
-
+  SrvName: "dytt-comment-srv"
+  CliName: "dytt-comment-cli"
+  Url: "http://localhost:9411/api/v2/spans"
+  Port: "127.0.0.1:8086"
 Server:
   Name: "TiktokCommentServer"
   Address: "127.0.0.1"
