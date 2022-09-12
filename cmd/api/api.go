@@ -36,7 +36,6 @@ var (
 	EtcdAddress = fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
 )
 
-// 初始化 GIN API 及 Router
 func main() {
 	rpc.InitRPC(&Config)
 

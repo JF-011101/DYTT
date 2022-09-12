@@ -37,8 +37,7 @@ func GetFavoriteRelation(ctx context.Context, uid int64, vid int64) (*Video, err
 // Favorite new favorite data.
 func Favorite(ctx context.Context, uid int64, vid int64) error {
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
-		//1. 新增点赞数据
+
 		user := new(User)
 		if err := tx.WithContext(ctx).First(user, uid).Error; err != nil {
 			return err
@@ -52,7 +51,7 @@ func Favorite(ctx context.Context, uid int64, vid int64) error {
 		if err := tx.WithContext(ctx).Model(&user).Association("FavoriteVideos").Append(video); err != nil {
 			return err
 		}
-		//2.改变 video 表中的 favorite count
+
 		res := tx.Model(video).Update("favorite_count", gorm.Expr("favorite_count + ?", 1))
 		if res.Error != nil {
 			return res.Error
@@ -70,8 +69,6 @@ func Favorite(ctx context.Context, uid int64, vid int64) error {
 // DisFavorite deletes the specified favorite from the database
 func DisFavorite(ctx context.Context, uid int64, vid int64) error {
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
-		//1. 删除点赞数据
 		user := new(User)
 		if err := tx.WithContext(ctx).First(user, uid).Error; err != nil {
 			return err
@@ -87,7 +84,6 @@ func DisFavorite(ctx context.Context, uid int64, vid int64) error {
 			return err
 		}
 
-		//2.改变 video 表中的 favorite count
 		res := tx.Model(video).Update("favorite_count", gorm.Expr("favorite_count - ?", 1))
 		if res.Error != nil {
 			return res.Error

@@ -7,7 +7,6 @@
  * @Description: Error code, design logic: https://github.com/jf-011101/ErrnoCode
  */
 
-// 错误码
 package errno
 
 import code "github.com/jf-011101/dytt/third_party/forked/code"

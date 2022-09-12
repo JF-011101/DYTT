@@ -42,14 +42,12 @@ func GetRelation(ctx context.Context, uid int64, tid int64) (*Relation, error) {
 // NewRelation creates a new Relation
 func NewRelation(ctx context.Context, uid int64, tid int64) error {
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
-		//1. 新增关注数据
+
 		err := tx.Create(&Relation{UserID: int(uid), ToUserID: int(tid)}).Error
 		if err != nil {
 			return err
 		}
 
-		//2.改变 user 表中的 following count
 		res := tx.Model(new(User)).Where("ID = ?", uid).Update("following_count", gorm.Expr("following_count + ?", 1))
 		if res.Error != nil {
 			return res.Error
@@ -59,7 +57,6 @@ func NewRelation(ctx context.Context, uid int64, tid int64) error {
 			return errno.ErrDatabase
 		}
 
-		//3.改变 user 表中的 follower count
 		res = tx.Model(new(User)).Where("ID = ?", tid).Update("follower_count", gorm.Expr("follower_count + ?", 1))
 		if res.Error != nil {
 			return res.Error
@@ -77,18 +74,16 @@ func NewRelation(ctx context.Context, uid int64, tid int64) error {
 // DisRelation deletes a relation from the database.
 func DisRelation(ctx context.Context, uid int64, tid int64) error {
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
 		relation := new(Relation)
 		if err := tx.Where("user_id = ? AND to_user_id=?", uid, tid).First(&relation).Error; err != nil {
 			return err
 		}
 
-		//1. 删除关注数据
 		err := tx.Unscoped().Delete(&relation).Error
 		if err != nil {
 			return err
 		}
-		//2.改变 user 表中的 following count
+
 		res := tx.Model(new(User)).Where("ID = ?", uid).Update("following_count", gorm.Expr("following_count - ?", 1))
 		if res.Error != nil {
 			return res.Error
@@ -98,7 +93,6 @@ func DisRelation(ctx context.Context, uid int64, tid int64) error {
 			return errno.ErrDatabase
 		}
 
-		//3.改变 user 表中的 follower count
 		res = tx.Model(new(User)).Where("ID = ?", tid).Update("follower_count", gorm.Expr("follower_count - ?", 1))
 		if res.Error != nil {
 			return res.Error

@@ -9,7 +9,7 @@
 # DYTT - 微服务实战
 DYTT = **D**ou **Y**in **T**ik **T**ok
 
-DYTT 是一个基于 gRPC 微服务框架 + Gin Web 框架开发的抖音后端项目，基于《[接口文档在线分享](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)[- Apifox](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)》提供的接口进行开发，使用 Insomnia 进行 API 调试并生成[测试文档](https://github.com/jf-011101/DYTT/blob/master/Insomnia_2022-08-22)。使用《[极简抖音App使用说明 - 青训营版](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7) 》提供的APK进行测试， 功能完整实现
+DYTT 是一个基于 gRPC 微服务框架 + Gin Web 框架开发的抖音后端项目，基于《[接口文档在线分享](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)[- Apifox](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)》提供的接口进行开发，使用 Insomnia 进行 API 调试。使用《[极简抖音App使用说明 - 青训营版](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7) 》提供的APK进行测试， 功能完整实现
 
 ## 一、项目概要
  
@@ -40,7 +40,7 @@ DYTT 是一个基于 gRPC 微服务框架 + Gin Web 框架开发的抖音后端�
 
 ## 1. 服务调用关系
 
-![](https://raw.githubusercontent.com/jf-011101/Image_hosting_rep/main/arc1.png)
+![](https://raw.githubusercontent.com/JF-011101/Image_hosting_rep/main/20220909092129.png)
 ## 2. 数据库 ER 图
 
 ![](https://raw.githubusercontent.com/jf-011101/Image_hosting_rep/main/dytter1.jpg)
