@@ -15,6 +15,8 @@ import (
 	"fmt"
 	"time"
 
+	"google.golang.org/grpc/resolver"
+
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/internal/pkg/discovery"
 	"github.com/jf-011101/dytt/internal/pkg/gtls"
@@ -22,8 +24,6 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/tracing"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/pkg/errno"
-
-	"google.golang.org/grpc/resolver"
 )
 
 var userClient user.UserSrvClient
@@ -36,8 +36,8 @@ func initUserRpc(Config *ttviper.Config) {
 
 	// etcd register
 	EtcdAddress := fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
-	EtcdRegister := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
-	resolver.Register(EtcdRegister)
+	EtcdResolver := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
+	resolver.Register(EtcdResolver)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	// init tlsClient and token
@@ -79,6 +79,30 @@ func Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *u
 
 func Login(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
 	resp, err = userClient.Login(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(int(resp.StatusCode), *resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
+	resp, err = userClient.Refresh(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(int(resp.StatusCode), *resp.StatusMsg)
+	}
+
+	return resp, nil
+}
+
+func QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
+	resp, err = userClient.QueryUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}

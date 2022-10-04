@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/jf-011101/dytt/internal/pkg/ilog"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc/resolver"
+
+	"github.com/jf-011101/dytt/internal/pkg/ilog"
 )
 
 const (

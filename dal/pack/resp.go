@@ -37,8 +37,43 @@ func BuilduserRegisterResp(err error) *user.DouyinUserRegisterResponse {
 	return userRegisterResp(s)
 }
 
+func BuilduserQueryResp(err error) *user.DouyinUserQueryResponse {
+	if err == nil {
+		return userQueryResp(errno.Success)
+	}
+
+	e := errno.ErrNo{}
+	if errors.As(err, &e) {
+		return userQueryResp(e)
+	}
+
+	s := errno.ErrUnknown.WithMessage(err.Error())
+	return userQueryResp(s)
+}
+
+func BuilduserRefreshResp(err error) *user.DouyinUserRefreshResponse {
+	if err == nil {
+		return userRefreshResp(errno.Success)
+	}
+
+	e := errno.ErrNo{}
+	if errors.As(err, &e) {
+		return userRefreshResp(e)
+	}
+
+	s := errno.ErrUnknown.WithMessage(err.Error())
+	return userRefreshResp(s)
+}
 func userRegisterResp(err errno.ErrNo) *user.DouyinUserRegisterResponse {
 	return &user.DouyinUserRegisterResponse{StatusCode: int32(err.ErrCode), StatusMsg: &err.ErrMsg}
+}
+
+func userQueryResp(err errno.ErrNo) *user.DouyinUserQueryResponse {
+	return &user.DouyinUserQueryResponse{StatusCode: int32(err.ErrCode), StatusMsg: &err.ErrMsg}
+}
+
+func userRefreshResp(err errno.ErrNo) *user.DouyinUserRefreshResponse {
+	return &user.DouyinUserRefreshResponse{StatusCode: int32(err.ErrCode), Data: nil, StatusMsg: &err.ErrMsg}
 }
 
 // BuilduserResp build userResp from error

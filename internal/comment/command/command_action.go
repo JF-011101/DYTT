@@ -12,10 +12,9 @@ package command
 import (
 	"context"
 
+	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/grpc_gen/comment"
 	"github.com/jf-011101/dytt/pkg/errno"
-
-	"github.com/jf-011101/dytt/dal/db"
 )
 
 type CommentActionService struct {

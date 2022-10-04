@@ -18,6 +18,7 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/internal/user/command"
 	"github.com/jf-011101/dytt/pkg/errno"
+	"github.com/jf-011101/dytt/third_party/forked/pir"
 )
 
 var (
@@ -93,6 +94,43 @@ func (s *UserSrvImpl) Login(ctx context.Context, req *user.DouyinUserRegisterReq
 	resp = pack.BuilduserRegisterResp(errno.Success)
 	resp.UserId = uid
 	resp.Token = token
+	return resp, nil
+}
+
+func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
+	data := make([]*pir.Matrix, 1)
+	hint := pir.Msg{Data: data}
+	hint, err = command.NewRefreshUserService(ctx).Refresh(req)
+
+	if err != nil {
+		resp = pack.BuilduserRefreshResp(err)
+		return resp, nil
+	}
+	resp = pack.BuilduserRefreshResp(errno.Success)
+
+	for k, v := range hint.Data {
+		resp.Data[k].Cols = v.Cols
+		resp.Data[k].Rows = v.Rows
+		for o, p := range v.Data {
+			resp.Data[k].Data[o] = uint64(p)
+		}
+
+	}
+	return resp, nil
+}
+
+func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
+	if len(req.Username) == 0 {
+		resp = pack.BuilduserQueryResp(errno.ErrBind)
+		return resp, nil
+	}
+	err = command.NewQueryUserService(ctx).QueryUser(req)
+
+	if err != nil {
+		resp = pack.BuilduserQueryResp(err)
+		return resp, nil
+	}
+	resp = pack.BuilduserQueryResp(errno.Success)
 	return resp, nil
 }
 

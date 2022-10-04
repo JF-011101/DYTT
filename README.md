@@ -9,14 +9,14 @@
 # DYTT - 微服务实战
 DYTT = **D**ou **Y**in **T**ik **T**ok
 
-DYTT 是一个基于 gRPC 微服务框架 + Gin Web 框架开发的抖音后端项目，基于《[接口文档在线分享](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)[- Apifox](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)》提供的接口进行开发，使用 Insomnia 进行 API 调试。使用《[极简抖音App使用说明 - 青训营版](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7) 》提供的APK进行测试， 功能完整实现
+DYTT 是一个基于 gRPC 微服务框架 + Gin HTTP 框架开发的抖音后端项目，基于《[接口文档在线分享](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)[- Apifox](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/)》提供的接口进行开发，使用 Insomnia 进行 API 调试。使用《[极简抖音App使用说明 - 青训营版](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7) 》提供的APK进行测试， 功能完整实现
 
 ## 一、项目概要
  
 
 1. 采用 (HTTP API 层 + RPC Service 层+Dal 层) 项目结构；
 
-2. 使用 x509 证书对服务间通信进行加密和认证；
+2. 使用 X.509 证书对服务间通信进行加密和认证；
 
 3. 使用 [go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)中的日志记录、认证、和恢复；
 
@@ -85,5 +85,11 @@ DYTT 是一个基于 gRPC 微服务框架 + Gin Web 框架开发的抖音后端�
 3. 启动服务
     - 项目根目录下执行 make [serverName].server以启动某个服务(serverName: api/user/comment/favorite/feed/publish/relation)
     - 访问 http://127.0.0.1:9411/zipkin/ 可以观测到追踪的服务链。
+
+## 参考
+https://time.geekbang.org/column/intro/100079601?tab=catalog
+https://github.com/grpc-ecosystem/go-grpc-middleware
+https://www.cnblogs.com/FireworksEasyCool/
+https://pandaychen.github.io/
 
 

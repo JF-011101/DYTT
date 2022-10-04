@@ -15,8 +15,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/jf-011101/dytt/internal/pkg/ilog"
 	"github.com/minio/minio-go/v7"
+
+	"github.com/jf-011101/dytt/internal/pkg/ilog"
 )
 
 // CreateBucket 创建桶

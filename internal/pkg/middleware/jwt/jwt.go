@@ -10,11 +10,10 @@
 package jwt
 
 import (
-	"github.com/jf-011101/dytt/third_party/forked/errors"
-
-	code "github.com/jf-011101/dytt/third_party/forked/code"
-
 	"github.com/golang-jwt/jwt"
+	
+	"github.com/jf-011101/dytt/third_party/forked/errors"
+	code "github.com/jf-011101/dytt/third_party/forked/code"
 )
 
 // JWT signing Key

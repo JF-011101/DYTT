@@ -11,17 +11,20 @@ package handlers
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"strconv"
 
-	"github.com/jf-011101/dytt/pkg/errno"
+	"github.com/gin-gonic/gin"
 
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
-
 	"github.com/jf-011101/dytt/internal/api/rpc"
-
-	"github.com/gin-gonic/gin"
+	"github.com/jf-011101/dytt/pkg/errno"
+	"github.com/jf-011101/dytt/third_party/forked/pir"
 )
+
+var hint pir.Msg
 
 func Register(c *gin.Context) {
 	var registerVar UserRegisterParam
@@ -63,6 +66,54 @@ func Login(c *gin.Context) {
 		return
 	}
 	SendResponse(c, resp)
+}
+
+func Refresh(c *gin.Context) {
+	fmt.Print("11111111111111111111111")
+	resp, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
+	for k, v := range resp.Data {
+		hint.Data[k].Cols = v.Cols
+		hint.Data[k].Rows = v.Rows
+		for o, p := range v.Data {
+			hint.Data[k].Data[o] = pir.Elem(p)
+		}
+
+	}
+	fmt.Print(hint)
+	fmt.Print("22222222222222222222222")
+	error_type := "刷新失败"
+	if err != nil {
+		fmt.Print(err)
+		error_type = ""
+
+	}
+	c.HTML(http.StatusOK, "pir.html", gin.H{
+		"error_type": error_type,
+	})
+}
+
+func QueryUserBoundary(c *gin.Context) {
+	error_type := ""
+	c.HTML(http.StatusOK, "pir.html", gin.H{
+		"error_type": error_type,
+	})
+}
+
+func QueryUser(c *gin.Context) {
+	var QueryVar UserQueryParam
+	QueryVar.UserName = c.PostForm("username")
+
+	_, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
+		Username: QueryVar.UserName,
+	})
+	error_type := "存在"
+	if err != nil {
+		error_type = "不存在"
+	}
+
+	c.HTML(http.StatusOK, "pir.html", gin.H{
+		"error_type": error_type,
+	})
 }
 
 // 传递 获取注册用户`UserID`操作 的上下文至 User 服务的 RPC 客户端, 并获取相应的响应.

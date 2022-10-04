@@ -10,10 +10,11 @@
 package minio
 
 import (
-	"github.com/jf-011101/dytt/internal/pkg/ilog"
-	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+
+	"github.com/jf-011101/dytt/internal/pkg/ilog"
+	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 )
 
 var (

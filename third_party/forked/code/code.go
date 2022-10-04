@@ -9,8 +9,9 @@
 package code
 
 import (
-	"github.com/jf-011101/dytt/third_party/forked/errors"
 	"github.com/novalagung/gubrak"
+	
+	"github.com/jf-011101/dytt/third_party/forked/errors"
 )
 
 // ErrCode implements `github.com/jf-011101/dytt/pkg/errors`.Coder interface.

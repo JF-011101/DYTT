@@ -12,15 +12,16 @@ package comment
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/comment"
 	"github.com/jf-011101/dytt/internal/comment/command"
 	"github.com/jf-011101/dytt/internal/pkg/middleware/jwt"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
 )
 
 var (

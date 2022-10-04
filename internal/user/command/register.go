@@ -15,13 +15,11 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/jf-011101/dytt/pkg/errno"
-
-	"github.com/jf-011101/dytt/grpc_gen/user"
+	"golang.org/x/crypto/argon2"
 
 	"github.com/jf-011101/dytt/dal/db"
-
-	"golang.org/x/crypto/argon2"
+	"github.com/jf-011101/dytt/grpc_gen/user"
+	"github.com/jf-011101/dytt/pkg/errno"
 )
 
 type CreateUserService struct {

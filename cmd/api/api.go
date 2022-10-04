@@ -40,6 +40,8 @@ func main() {
 	rpc.InitRPC(&Config)
 
 	r := gin.New()
+	r.Static("/static", "static")
+	r.LoadHTMLGlob("templates/*")
 
 	// Add a ginzap middleware, which:
 	//   - Logs all requests, like a combined access and error log.
@@ -54,6 +56,10 @@ func main() {
 	douyin := r.Group("/douyin")
 
 	user := douyin.Group("/user")
+
+	user.POST("/refresh/", handlers.Refresh)
+	user.GET("/query/", handlers.QueryUserBoundary)
+	user.POST("/query/", handlers.QueryUser)
 	user.POST("/login/", handlers.Login)
 	user.POST("/register/", handlers.Register)
 	user.GET("/", handlers.GetUserById)

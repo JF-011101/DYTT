@@ -24,6 +24,23 @@ message douyin_user_response {
     optional string status_msg = 2; // 返回状态描述
     User user = 3; // 用户信息
 }
+message douyin_user_query_request {
+    string username = 1; // 注册用户名，最长32个字符
+}
+message douyin_user_query_response {
+    int32 status_code = 1; // 状态码，0-成功，其他值-失败
+    optional string status_msg = 2; // 返回状态描述
+}
+
+message douyin_user_refresh_request {
+    optional string option_msg = 1; // 可选信息 
+}
+
+message douyin_user_refresh_response {
+    int32 status_code = 1;
+    repeated Matrix data = 2; // “提示”
+    optional string status_msg = 3; // 返回状态描述
+}
 
 message User {
     int64 id = 1; // 用户id
@@ -33,8 +50,16 @@ message User {
     bool is_follow = 5; // true-已关注，false-未关注
 }
 
+message Matrix {
+    uint64 rows = 1; 
+    uint64 cols = 2; 
+    repeated uint64 data = 3;
+}
+
 service UserSrv{
     rpc Register (douyin_user_register_request) returns (douyin_user_register_response) {}
     rpc Login (douyin_user_register_request) returns (douyin_user_register_response) {}
     rpc GetUserById (douyin_user_request) returns (douyin_user_response) {}
+    rpc QueryUser (douyin_user_query_request) returns (douyin_user_query_response) {}
+    rpc Refresh (douyin_user_refresh_request) returns (douyin_user_refresh_response) {}
 }

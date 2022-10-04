@@ -17,19 +17,19 @@ import (
 	"os/signal"
 	"syscall"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcauth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
 	"google.golang.org/grpc"
 
 	"github.com/jf-011101/dytt/dal"
-	user_pb "github.com/jf-011101/dytt/grpc_gen/user"
+	userpb "github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/internal/pkg/discovery"
 	"github.com/jf-011101/dytt/internal/pkg/gtls"
 	"github.com/jf-011101/dytt/internal/pkg/ilog"
-	my_grpc_middleware "github.com/jf-011101/dytt/internal/pkg/middleware/grpc"
+	mygrpcmiddleware "github.com/jf-011101/dytt/internal/pkg/middleware/grpc"
 	"github.com/jf-011101/dytt/internal/pkg/tracing"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/internal/user"
@@ -84,19 +84,19 @@ func main() {
 	}
 
 	s := grpc.NewServer(grpc.Creds(c), grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer)),
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_auth.StreamServerInterceptor(my_grpc_middleware.AuthInterceptor),
-			grpc_zap.StreamServerInterceptor(my_grpc_middleware.ZapInterceptor()),
-			grpc_recovery.StreamServerInterceptor(my_grpc_middleware.RecoveryInterceptor()),
+		grpc.StreamInterceptor(grpcmiddleware.ChainStreamServer(
+			grpcauth.StreamServerInterceptor(mygrpcmiddleware.AuthInterceptor),
+			grpczap.StreamServerInterceptor(mygrpcmiddleware.ZapInterceptor()),
+			grpcrecovery.StreamServerInterceptor(mygrpcmiddleware.RecoveryInterceptor()),
 		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_auth.UnaryServerInterceptor(my_grpc_middleware.AuthInterceptor),
-			grpc_zap.UnaryServerInterceptor(my_grpc_middleware.ZapInterceptor()),
-			grpc_recovery.UnaryServerInterceptor(my_grpc_middleware.RecoveryInterceptor()),
+		grpc.UnaryInterceptor(grpcmiddleware.ChainUnaryServer(
+			grpcauth.UnaryServerInterceptor(mygrpcmiddleware.AuthInterceptor),
+			grpczap.UnaryServerInterceptor(mygrpcmiddleware.ZapInterceptor()),
+			grpcrecovery.UnaryServerInterceptor(mygrpcmiddleware.RecoveryInterceptor()),
 		)),
 	)
 
-	user_pb.RegisterUserSrvServer(s, &user.UserSrvImpl{})
+	userpb.RegisterUserSrvServer(s, &user.UserSrvImpl{})
 
 	lis, err := net.Listen("tcp", ServiceAddr)
 	if err != nil {

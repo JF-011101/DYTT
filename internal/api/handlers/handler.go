@@ -25,6 +25,11 @@ type UserRegisterParam struct {
 	PassWord string `json:"password"` // 用户密码
 }
 
+// 查询用户名是否存在
+type UserQueryParam struct {
+	UserName string `json:"username"`
+}
+
 // 用户信息 输出参数
 type UserParam struct {
 	UserId int64  `json:"user_id,omitempty"` // 用户id

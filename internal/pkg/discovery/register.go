@@ -9,8 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jf-011101/dytt/internal/pkg/ilog"
 	clientv3 "go.etcd.io/etcd/client/v3"
+
+	"github.com/jf-011101/dytt/internal/pkg/ilog"
 )
 
 type Register struct {

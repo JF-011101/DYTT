@@ -13,14 +13,12 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/jf-011101/dytt/pkg/errno"
+	"github.com/gin-gonic/gin"
 
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/feed"
-
 	"github.com/jf-011101/dytt/internal/api/rpc"
-
-	"github.com/gin-gonic/gin"
+	"github.com/jf-011101/dytt/pkg/errno"
 )
 
 func GetUserFeed(c *gin.Context) {

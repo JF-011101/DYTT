@@ -7,7 +7,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// ZapInterceptor 返回zap.logger实例(把日志写到文件中)
+// ZapInterceptor return an instance of zap.Logger
 func ZapInterceptor() *zap.Logger {
 	w := zapcore.AddSync(&lumberjack.Logger{
 		Filename:  "./tmp/grpc.log",

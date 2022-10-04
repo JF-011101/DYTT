@@ -18,15 +18,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gofrs/uuid"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
+
+	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/grpc_gen/publish"
 	"github.com/jf-011101/dytt/internal/pkg/minio"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
-
-	"github.com/jf-011101/dytt/dal/db"
-
-	"github.com/gofrs/uuid"
-
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 type PublishActionService struct {

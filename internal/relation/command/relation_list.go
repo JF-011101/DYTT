@@ -12,11 +12,10 @@ package command
 import (
 	"context"
 
+	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/relation"
 	"github.com/jf-011101/dytt/grpc_gen/user"
-
-	"github.com/jf-011101/dytt/dal/db"
 )
 
 type FollowingListService struct {

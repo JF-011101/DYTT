@@ -15,6 +15,8 @@ import (
 	"fmt"
 	"time"
 
+	"google.golang.org/grpc/resolver"
+	
 	"github.com/jf-011101/dytt/grpc_gen/feed"
 	"github.com/jf-011101/dytt/internal/pkg/discovery"
 	"github.com/jf-011101/dytt/internal/pkg/gtls"
@@ -22,8 +24,6 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/tracing"
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/pkg/errno"
-
-	"google.golang.org/grpc/resolver"
 )
 
 var feedClient feed.FeedSrvClient
@@ -35,8 +35,8 @@ func initFeedRpc(Config *ttviper.Config) {
 	ZIPKIN_PORT := Config.Viper.GetString("ZIPKIN.Port")
 	// etcd register
 	EtcdAddress := fmt.Sprintf("%s:%d", Config.Viper.GetString("Etcd.Address"), Config.Viper.GetInt("Etcd.Port"))
-	EtcdRegister := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
-	resolver.Register(EtcdRegister)
+	EtcdResolver := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
+	resolver.Register(EtcdResolver)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	// init tlsClient and token

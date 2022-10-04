@@ -15,14 +15,12 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/jf-011101/dytt/pkg/errno"
+	"github.com/gin-gonic/gin"
 
+	"github.com/jf-011101/dytt/pkg/errno"
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/publish"
-
 	"github.com/jf-011101/dytt/internal/api/rpc"
-
-	"github.com/gin-gonic/gin"
 )
 
 func PublishAction(c *gin.Context) {

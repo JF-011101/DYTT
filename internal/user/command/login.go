@@ -16,12 +16,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jf-011101/dytt/pkg/errno"
 	"golang.org/x/crypto/argon2"
 
-	"github.com/jf-011101/dytt/grpc_gen/user"
-
 	"github.com/jf-011101/dytt/dal/db"
+	"github.com/jf-011101/dytt/grpc_gen/user"
+	"github.com/jf-011101/dytt/pkg/errno"
 )
 
 type CheckUserService struct {
