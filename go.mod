@@ -30,6 +30,7 @@ require (
 )
 
 require (
+	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/gorilla/mux v1.7.3 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 )

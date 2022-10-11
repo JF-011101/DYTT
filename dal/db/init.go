@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
+
+	"github.com/go-redis/redis"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -24,11 +26,12 @@ import (
 
 var (
 	DB     *gorm.DB
+	RedisDB *redis.Client
 	Config = ttviper.ConfigInit("TIKTOK_DB", "dbConfig")
 )
 
 // Init init DB
-func InitDB() {
+func InitMysql() {
 	var err error
 
 	viper := Config.Viper
@@ -88,7 +91,28 @@ func InitDB() {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 }
+func InitRedis(){
+	viper:=config.Viper
+	
+	RedisDB = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d",viper.GetString("redis.host"),viper.GetInt("redis.port")),
+		Password: fmt.Sprintf("%s",viper.GetString("redis.password")),
+		DB:       viper.GetInt("redis.db"),
+		PoolSize: viper.GetInt("redis.poolsize"),
+	})
+	_, err := RedisDB.Ping().Result()
+	if err != nil {
+		fmt.Println("redis连接失败")
+
+	} else {
+		fmt.Println("redis连接成功!!!")
+	}
+	return err
+}
+
+
 
 func Init() {
-	InitDB()
+	InitMysql()
+	//InitRedis()
 }

@@ -22,9 +22,15 @@ services:
       - 8091:3306
     environment:
       - MYSQL_DATABASE=dytt
-      - MYSQL_USER=youruser
-      - MYSQL_PASSWORD=yourpassword
+      - MYSQL_USER=dyttdb
+      - MYSQL_PASSWORD=dytt!
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass dytt!
 
   Etcd:
     image: 'bitnami/etcd:latest'
