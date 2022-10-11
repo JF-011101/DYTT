@@ -19,9 +19,9 @@ import (
 
 type Server struct {
 	Name    string `json:"name"`
-	Addr    string `json:"addr"`    // 地址
-	Version string `json:"version"` // 版本
-	Weight  int64  `json:"weight"`  // 权重
+	Addr    string `json:"addr"`
+	Version string `json:"version"`
+	Weight  int64  `json:"weight"`
 }
 
 func BuildPrefix(server Server) string {
@@ -36,6 +36,7 @@ func BuildRegisterPath(server Server) string {
 	return fmt.Sprintf("%s%s", BuildPrefix(server), server.Addr)
 }
 
+// ParseValue unmarshall a value to a server
 func ParseValue(value []byte) (Server, error) {
 	server := Server{}
 	if err := json.Unmarshal(value, &server); err != nil {
@@ -57,7 +58,7 @@ func SplitPath(path string) (Server, error) {
 	return server, nil
 }
 
-// Exist helper function
+// Exist could judge whether a service exists
 func Exist(l []resolver.Address, addr resolver.Address) bool {
 	for i := range l {
 		if l[i].Addr == addr.Addr {
@@ -68,7 +69,6 @@ func Exist(l []resolver.Address, addr resolver.Address) bool {
 	return false
 }
 
-// Remove helper function
 func Remove(s []resolver.Address, addr resolver.Address) ([]resolver.Address, bool) {
 	for i := range s {
 		if s[i].Addr == addr.Addr {

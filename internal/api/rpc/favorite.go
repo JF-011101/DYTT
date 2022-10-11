@@ -53,6 +53,7 @@ func initFavoriteRpc(Config *ttviper.Config) {
 	resolver.Register(EtcdResolver)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
+	// zipkin tracer
 	tracer, _, err := tracing.NewZipkinTracer(ZIPKIN_URL, ZIPKIN_CLI_NAME, ZIPKIN_PORT)
 
 	if err != nil {
