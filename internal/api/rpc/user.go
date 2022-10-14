@@ -39,6 +39,7 @@ func initUserRpc(Config *ttviper.Config) {
 	EtcdResolver := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
 	resolver.Register(EtcdResolver)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	fmt.Print("etcd rig over")
 
 	// init tlsClient and token
 	tlsClient := gtls.Client{

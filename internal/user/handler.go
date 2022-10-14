@@ -18,7 +18,7 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/internal/user/command"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"github.com/jf-011101/dytt/third_party/forked/pir"
+	"github.com/jf-011101/dytt/dal/db"
 )
 
 var (
@@ -98,8 +98,8 @@ func (s *UserSrvImpl) Login(ctx context.Context, req *user.DouyinUserRegisterReq
 }
 
 func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
-	data := make([]*pir.Matrix, 1)
-	hint := pir.Msg{Data: data}
+	data := make([]*db.Matrix, 1)
+	hint := db.Msg{Data: data}
 	hint, err = command.NewRefreshUserService(ctx).Refresh(req)
 
 	if err != nil {
@@ -120,11 +120,11 @@ func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRe
 }
 
 func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
-	if len(req.Username) == 0 {
+	if req.PhoneNumber == 0 {
 		resp = pack.BuilduserQueryResp(errno.ErrBind)
 		return resp, nil
 	}
-	err = command.NewQueryUserService(ctx).QueryUser(req)
+	err = command.NewQueryUserService(ctx).QueryPhoneNumber(req)
 
 	if err != nil {
 		resp = pack.BuilduserQueryResp(err)

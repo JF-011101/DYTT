@@ -1,0 +1,50 @@
+Working with: n=1024; db size=2^2 (l=2, m=2); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000005 MB
+Working with: n=1024; db size=2^1 (l=1, m=2); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000002 MB
+Working with: n=1024; db size=2^3 (l=2, m=4); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000009 MB
+Working with: n=1024; db size=2^27 (l=15052, m=14769); logq=32; p=833; sigma=6.400000
+Total packed DB size is ~257.113216 MB
+Executing with entries consisting of 2048 (>= 1) bits; p is 833; packing factor is 0; number of DB elems per entry is 212.
+                Offline download: 60208 KB
+                Online upload: 57 KB
+                Online download: 58 KB
+Working with: n=1024; db size=2^20 (l=1024, m=1024); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~1.244093 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 1024-by-1024
+After squishing, with compression factor 3: Dims: 1024-by-342
+        Elapsed: 2.056580767s
+                Offline download: 4096.000000 KB
+Building query...
+        Elapsed: 8.442776ms
+                Online upload: 4.000000 KB
+Answering query...
+        Elapsed: 1.272096ms
+        Rate: 977.986454 MB/s
+                Online download: 4.000000 KB
+Reconstructing...
+Batch 0 (querying index 262144 -- row should be >= 256): Got 108 instead of 104
+--- FAIL: TestSimplePir (2.44s)
+panic: Reconstruct failed! [recovered]
+        panic: Reconstruct failed!
+
+goroutine 7 [running]:
+testing.tRunner.func1.2({0x512980, 0x5649e0})
+        /home/going/go/go1.18.2/src/testing/testing.go:1389 +0x24e
+testing.tRunner.func1()
+        /home/going/go/go1.18.2/src/testing/testing.go:1392 +0x39f
+panic({0x512980, 0x5649e0})
+        /home/going/go/go1.18.2/src/runtime/panic.go:838 +0x207
+github.com/jf-011101/dytt/third_party/forked/pir.RunPIR({0x565dd8, 0x654470}, 0xc0000987e0, {0x400, 0x401999999999999a, 0x400, 0x400, 0x20, 0x3df}, {0xc0001f9ef8, ...})
+        /home/going/workspace/golang/src/github.com/jf-011101/dytt/third_party/forked/pir/pir.go:155 +0xf3f
+github.com/jf-011101/dytt/third_party/forked/pir.TestSimplePir(0x0?)
+        /home/going/workspace/golang/src/github.com/jf-011101/dytt/third_party/forked/pir/pir_test.go:107 +0x125
+testing.tRunner(0xc00009a340, 0x541528)
+        /home/going/go/go1.18.2/src/testing/testing.go:1439 +0x102
+created by testing.(*T).Run
+        /home/going/go/go1.18.2/src/testing/testing.go:1486 +0x35f
+exit status 2
+FAIL    github.com/jf-011101/dytt/third_party/forked/pir        4.134s

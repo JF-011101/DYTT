@@ -84,16 +84,16 @@
       <div class="login-header text-center">
         <a> <img alt="HIT" src="static/images/pir1.png"> </a>
       </div>
-      <form name="username" method="post">
+      <form name="phone-number" method="post">
         <div class="form-group has-feedback feedback-left">
-          <input type="text" placeholder="要查询的用户名" class="form-control" name="username" id="username" />
+          <input type="text" placeholder="要查询的用户号码" class="form-control" name="phone-number" id="phone-number" />
           <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
         </div>
    
         <div class="form-group"> 
           <a style="color: red;">{{.error_type}}</a>
-          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir';javascript:this.form.method='post'">查询是否存在</button>
-          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/refresh';javascript:this.form.method='post'">刷新</button>
+          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir/query';javascript:this.form.method='post'">查询是否存在</button>
+          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir/refresh';javascript:this.form.method='post'">刷新</button>
         </div>
        
 

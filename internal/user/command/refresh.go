@@ -2,11 +2,11 @@ package command
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"github.com/jf-011101/dytt/third_party/forked/pir"
 )
 
 type RefreshUserService struct {
@@ -19,13 +19,14 @@ func NewRefreshUserService(ctx context.Context) *RefreshUserService {
 	}
 }
 
-func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (pir.Msg, error) {
+func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (db.Msg, error) {
+	fmt.Print("refresh")
 	userPhoneNumber, err := db.Reset(s.ctx)
 	if err != nil {
-		return pir.Msg{}, err
+		return db.Msg{}, err
 	}
 	if len(userPhoneNumber.Data) == 0 {
-		return pir.Msg{}, errno.ErrUserNotFound
+		return db.Msg{}, errno.ErrUserNotFound
 	}
 	return userPhoneNumber, nil
 }

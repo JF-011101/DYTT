@@ -25,9 +25,9 @@ type UserRegisterParam struct {
 	PassWord string `json:"password"` // 用户密码
 }
 
-// 查询用户名是否存在
+// 查询用户号码是否存在
 type UserQueryParam struct {
-	UserName string `json:"username"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 // 用户信息 输出参数

@@ -1,0 +1,33 @@
+syntax = "proto3";
+package pir;
+option go_package = "github.com/jf-011101/dytt/grpc_gen/pir";
+
+// protoc -I. --go_out=:D:/gopath/src ./idl/*.proto
+message pir_query_request {
+    uint64 phone_number = 1; // 注册用户名，最长32个字符
+}
+message pir_query_response {
+    int32 status_code = 1; // 状态码，0-成功，其他值-失败
+    optional string status_msg = 2; // 返回状态描述
+}
+
+message pir_refresh_request {
+    optional string option_msg = 1; // 可选信息 
+}
+
+message pir_refresh_response {
+    int32 status_code = 1;
+    repeated Matrix data = 2; // “提示”
+    optional string status_msg = 3; // 返回状态描述
+}
+
+message Matrix {
+    uint64 rows = 1; 
+    uint64 cols = 2; 
+    repeated uint64 data = 3;
+}
+
+service PirSrv{
+    rpc QueryPi (pir_query_request) returns (pir_query_response) {}
+    rpc Refresh (pir_refresh_request) returns (pir_refresh_response) {}
+}

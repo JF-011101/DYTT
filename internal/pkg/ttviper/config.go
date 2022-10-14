@@ -220,7 +220,7 @@ func ConfigInit(envPrefix string, cfgName string) Config {
 		viper.SetConfigName(cfgName) //name of config file (without extension)
 		// viper.AddConfigPath("/etc/dytt/config")
 		// viper.AddConfigPath("$HOME/.dytt/")
-		viper.AddConfigPath("D:/gopath/src/github.com/jf-011101/dytt/config")
+		//viper.AddConfigPath("D:/gopath/src/github.com/jf-011101/dytt/config")
 		viper.AddConfigPath("$DYTT_ROOT/config")
 	}
 

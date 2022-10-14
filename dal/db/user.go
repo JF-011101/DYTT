@@ -8,12 +8,13 @@
  */
 
 package db
-
+// #cgo CFLAGS: -O3 -march=native -msse4.1 -maes -mavx2 -mavx
+// #include "pir.h"
+import "C"
 import (
 	"context"
 	"fmt"
 
-	"github.com/jf-011101/dytt/third_party/forked/pir"
 	"gorm.io/gorm"
 )
 
@@ -61,21 +62,32 @@ func CreateUser(ctx context.Context, users []*User) error {
 }
 
 // QueryUser query list of user info
-func QueryUser(ctx context.Context, userName string) ([]*User, error) {
+func QueryUser(ctx context.Context, username string) ([]*User, error) {
 	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("user_name = ?", userName).Find(&res).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("user_name = ?", username).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func Reset(ctx context.Context) (pir.Msg, error) {
-	data := make([]*pir.Matrix, 1)
-	msg := pir.Msg{Data: data}
+func QueryPhoneNumber(ctx context.Context, phoneNumber uint64) ([]*User, error) {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func Reset(ctx context.Context) (Msg, error) {
+	fmt.Print("reset..")
+	data := make([]*Matrix, 1)
+	msg := Msg{Data: data}
 	var err error
 	if msg, err = InitPirDatabase(ctx); err != nil {
-		return pir.Msg{}, err
+		fmt.Print("init pir db err:")
+		return Msg{}, err
 	}
+	fmt.Print("reset success")
 	return msg, nil
 
 }
@@ -83,19 +95,21 @@ func Reset(ctx context.Context) (pir.Msg, error) {
 const LOGQ = uint64(32)
 const SEC_PARAM = uint64(1 << 10)
 
-var PIRDB *pir.Database
+var PIRDB *Database
 
-func InitPirDatabase(ctx context.Context) (pir.Msg, error) {
+func InitPirDatabase(ctx context.Context) (Msg, error) {
 	N := uint64(100000)
 	d := uint64(8)
-	spir := pir.SimplePIR{}
+	spir := SimplePIR{}
 	p := spir.PickParams(N, d, SEC_PARAM, LOGQ)
+	fmt.Print("pickparams finished")
 	var err error
 
 	if PIRDB, err = MakePirDB(ctx, N, d, &p); err != nil {
-		return pir.Msg{}, err
+		fmt.Print("makepirdb err:")
+		return Msg{}, err
 	}
-
+	fmt.Print("makepirdb success")
 	shared_state := spir.Init(PIRDB.Info, p)
 	server_state, offline_download := spir.Setup(PIRDB, shared_state, p)
 
@@ -103,8 +117,9 @@ func InitPirDatabase(ctx context.Context) (pir.Msg, error) {
 	return offline_download, nil
 }
 
-func MakePirDB(ctx context.Context, N, row_length uint64, p *pir.Params) (*pir.Database, error) {
-	D := pir.SetupDB(N, row_length, p)
+func MakePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database, error) {
+	D := SetupDB(N, row_length, p)
+	fmt.Print("pirdb:", D)
 	//D.Data = pir.MatrixRand(p.l, p.m, 0, p.p)
 
 	// Map DB elems to [-p/2; p/2]
@@ -112,11 +127,20 @@ func MakePirDB(ctx context.Context, N, row_length uint64, p *pir.Params) (*pir.D
 
 	m := make([]uint64, 100000)
 	id := 0
-	if err := DB.WithContext(ctx).Find(&m, "id > ?", id).Error; err != nil {
-		return nil, err
-	}
-	for k, v := range m {
-		D.Data.Data[k] = pir.Elem(v)
-	}
+	user := &User{}
+
+	result := DB.Model(&user).Select("phone_number").Where("id > ?", id).Find(&m)
+
+	fmt.Print(result.Error)        // returned error
+	fmt.Print(result.RowsAffected) // processed records count in all batches
+	fmt.Print("copy begin")
+	D.Data.Data = make([]Elem, 100000)
+	fmt.Print("1")
+	D.Data.Data[0] = C.Elem(m[0])
+	// for k, v := range m {
+	// 	D.Data.Data[k] = Elem(v)
+	// }
+	fmt.Print("copy finish")
+
 	return D, nil
 }

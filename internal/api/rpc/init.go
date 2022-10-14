@@ -10,26 +10,29 @@
 package rpc
 
 import (
+	"fmt"
+
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 )
 
 // InitRPC init rpc client
 func InitRPC(Config *ttviper.Config) {
 	UserConfig := ttviper.ConfigInit("TIKTOK_USER", "userConfig")
+	fmt.Print("config init over\n")
 	initUserRpc(&UserConfig)
 
-	FeedConfig := ttviper.ConfigInit("TIKTOK_FEED", "feedConfig")
-	initFeedRpc(&FeedConfig)
+	// FeedConfig := ttviper.ConfigInit("TIKTOK_FEED", "feedConfig")
+	// initFeedRpc(&FeedConfig)
 
-	PublishConfig := ttviper.ConfigInit("TIKTOK_PUBLISH", "publishConfig")
-	initPublishRpc(&PublishConfig)
+	// PublishConfig := ttviper.ConfigInit("TIKTOK_PUBLISH", "publishConfig")
+	// initPublishRpc(&PublishConfig)
 
-	FavoriteConfig := ttviper.ConfigInit("TIKTOK_FAVORITE", "favoriteConfig")
-	initFavoriteRpc(&FavoriteConfig)
+	// FavoriteConfig := ttviper.ConfigInit("TIKTOK_FAVORITE", "favoriteConfig")
+	// initFavoriteRpc(&FavoriteConfig)
 
-	CommentConfig := ttviper.ConfigInit("TIKTOK_COMMENT", "commentConfig")
-	initCommentRpc(&CommentConfig)
+	// CommentConfig := ttviper.ConfigInit("TIKTOK_COMMENT", "commentConfig")
+	// initCommentRpc(&CommentConfig)
 
-	RelationConfig := ttviper.ConfigInit("TIKTOK_RELATION", "relationConfig")
-	initRelationRpc(&RelationConfig)
+	// RelationConfig := ttviper.ConfigInit("TIKTOK_RELATION", "relationConfig")
+	// initRelationRpc(&RelationConfig)
 }

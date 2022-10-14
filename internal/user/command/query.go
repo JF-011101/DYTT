@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/grpc_gen/user"
@@ -20,9 +21,10 @@ func NewQueryUserService(ctx context.Context) *QueryUserService {
 }
 
 // QueryUser query if user exist
-func (s *QueryUserService) QueryUser(req *user.DouyinUserQueryRequest) error {
-	userName := req.Username
-	users, err := db.QueryUser(s.ctx, userName)
+func (s *QueryUserService) QueryPhoneNumber(req *user.DouyinUserQueryRequest) error {
+	phoneNumber := req.PhoneNumber
+	fmt.Print("123321")
+	users, err := db.QueryPhoneNumber(s.ctx, phoneNumber)
 	if err != nil {
 		return err
 	}

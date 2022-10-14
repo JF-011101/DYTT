@@ -17,14 +17,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/internal/api/rpc"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"github.com/jf-011101/dytt/third_party/forked/pir"
 )
 
-var hint pir.Msg
+var hint db.Msg
 
 func Register(c *gin.Context) {
 	var registerVar UserRegisterParam
@@ -75,7 +75,7 @@ func Refresh(c *gin.Context) {
 		hint.Data[k].Cols = v.Cols
 		hint.Data[k].Rows = v.Rows
 		for o, p := range v.Data {
-			hint.Data[k].Data[o] = pir.Elem(p)
+			hint.Data[k].Data[o] = db.Elem(p)
 		}
 
 	}
@@ -101,13 +101,15 @@ func QueryUserBoundary(c *gin.Context) {
 
 func QueryUser(c *gin.Context) {
 	var QueryVar UserQueryParam
-	QueryVar.UserName = c.PostForm("username")
+	QueryVar.PhoneNumber = c.PostForm("phone-number")
+	q, _ := strconv.Atoi(QueryVar.PhoneNumber)
 
 	_, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
-		Username: QueryVar.UserName,
+		PhoneNumber: uint64(q),
 	})
 	error_type := "存在"
 	if err != nil {
+		fmt.Print(err)
 		error_type = "不存在"
 	}
 

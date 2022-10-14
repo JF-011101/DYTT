@@ -25,7 +25,7 @@ message douyin_user_response {
     User user = 3; // 用户信息
 }
 message douyin_user_query_request {
-    string username = 1; // 注册用户名，最长32个字符
+    uint64 phone_number = 1; 
 }
 message douyin_user_query_response {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败

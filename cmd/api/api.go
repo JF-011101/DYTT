@@ -37,7 +37,9 @@ var (
 )
 
 func main() {
+	fmt.Print("begin\n")
 	rpc.InitRPC(&Config)
+	fmt.Print("initrpc over")
 
 	r := gin.New()
 	r.Static("/static", "static")
@@ -53,36 +55,37 @@ func main() {
 	//   - stack means whether output the stack info.
 	r.Use(ginzap.RecoveryWithZap(zap.L(), true))
 
-	douyin := r.Group("/douyin")
+	pir := r.Group("/pir")
+	pir.POST("/refresh/", handlers.Refresh)
+	pir.GET("/query/", handlers.QueryUserBoundary)
+	pir.POST("/query/", handlers.QueryUser)
+	// douyin := r.Group("/douyin")
 
-	user := douyin.Group("/user")
+	// user := douyin.Group("/user")
 
-	user.POST("/refresh/", handlers.Refresh)
-	user.GET("/query/", handlers.QueryUserBoundary)
-	user.POST("/query/", handlers.QueryUser)
-	user.POST("/login/", handlers.Login)
-	user.POST("/register/", handlers.Register)
-	user.GET("/", handlers.GetUserById)
+	// user.POST("/login/", handlers.Login)
+	// user.POST("/register/", handlers.Register)
+	// user.GET("/", handlers.GetUserById)
 
-	video := douyin.Group("/feed")
-	video.GET("/", handlers.GetUserFeed)
+	// video := douyin.Group("/feed")
+	// video.GET("/", handlers.GetUserFeed)
 
-	publish := douyin.Group("/publish")
-	publish.POST("/action/", handlers.PublishAction)
-	publish.GET("/list/", handlers.PublishList)
+	// publish := douyin.Group("/publish")
+	// publish.POST("/action/", handlers.PublishAction)
+	// publish.GET("/list/", handlers.PublishList)
 
-	favorite := douyin.Group("/favorite")
-	favorite.POST("/action/", handlers.FavoriteAction)
-	favorite.GET("/list/", handlers.FavoriteList)
+	// favorite := douyin.Group("/favorite")
+	// favorite.POST("/action/", handlers.FavoriteAction)
+	// favorite.GET("/list/", handlers.FavoriteList)
 
-	comment := douyin.Group("/comment")
-	comment.POST("/action/", handlers.CommentAction)
-	comment.GET("/list/", handlers.CommentList)
+	// comment := douyin.Group("/comment")
+	// comment.POST("/action/", handlers.CommentAction)
+	// comment.GET("/list/", handlers.CommentList)
 
-	relation := douyin.Group("/relation")
-	relation.POST("/action/", handlers.RelationAction)
-	relation.GET("/follow/list/", handlers.RelationFollowList)
-	relation.GET("/follower/list/", handlers.RelationFollowerList)
+	// relation := douyin.Group("/relation")
+	// relation.POST("/action/", handlers.RelationAction)
+	// relation.GET("/follow/list/", handlers.RelationFollowList)
+	// relation.GET("/follower/list/", handlers.RelationFollowerList)
 
 	srv := &http.Server{
 		Addr:    ":8088",

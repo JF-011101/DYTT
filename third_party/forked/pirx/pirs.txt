@@ -1,0 +1,109 @@
+Working with: n=1024; db size=2^2 (l=2, m=2); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000005 MB
+Working with: n=1024; db size=2^1 (l=1, m=2); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000002 MB
+Working with: n=1024; db size=2^3 (l=2, m=4); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.000009 MB
+Working with: n=1024; db size=2^27 (l=15052, m=14769); logq=32; p=833; sigma=6.400000
+Total packed DB size is ~257.113216 MB
+Executing with entries consisting of 2048 (>= 1) bits; p is 833; packing factor is 0; number of DB elems per entry is 212.
+                Offline download: 60208 KB
+                Online upload: 57 KB
+                Online download: 58 KB
+Working with: n=1024; db size=2^20 (l=1024, m=1024); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~1.244093 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 1024-by-1024
+After squishing, with compression factor 3: Dims: 1024-by-342
+        Elapsed: 189.505845ms
+                Offline download: 4096.000000 KB
+Building query...
+        Elapsed: 2.665291ms
+                Online upload: 4.000000 KB
+Answering query...
+        Elapsed: 242.261µs
+        Rate: 5135.340215 MB/s
+                Online download: 4.000000 KB
+Reconstructing...
+Success!
+        Elapsed: 458.29µs
+Working with: n=1024; db size=2^17 (l=362, m=363); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~0.155908 MB
+Working with: n=1024; db size=2^22 (l=2048, m=2048); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~4.976371 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 2048-by-2048
+After squishing, with compression factor 3: Dims: 2048-by-683
+        Elapsed: 733.99356ms
+                Offline download: 8192.000000 KB
+Building query...
+        Elapsed: 5.085127ms
+                Online upload: 8.000000 KB
+Answering query...
+        Elapsed: 818.682µs
+        Rate: 6078.514763 MB/s
+                Online download: 8.000000 KB
+Reconstructing...
+Success!
+        Elapsed: 802.358µs
+Working with: n=1024; db size=2^25 (l=5792, m=5794); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~39.816204 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 5792-by-5794
+After squishing, with compression factor 3: Dims: 5792-by-1932
+        Elapsed: 8.121680509s
+                Offline download: 23168.000000 KB
+Building query...
+        Elapsed: 12.978167ms
+                Online upload: 22.000000 KB
+Answering query...
+        Elapsed: 6.756492ms
+        Rate: 5893.029163 MB/s
+                Online download: 22.000000 KB
+Reconstructing...
+Success!
+        Elapsed: 2.369793ms
+Working with: n=1024; db size=2^20 (l=1024, m=1024); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~1.244093 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 1024-by-1024
+After squishing, with compression factor 3: Dims: 1024-by-342
+        Elapsed: 190.202533ms
+                Offline download: 4096.000000 KB
+Building query...
+        Elapsed: 17.9894ms
+                Online upload: 16.000000 KB
+Answering query...
+        Elapsed: 272.867µs
+        Rate: 18237.348685 MB/s
+                Online download: 4.000000 KB
+Reconstructing...
+Success!
+        Elapsed: 1.18381ms
+Working with: n=1024; db size=2^22 (l=2048, m=2048); logq=32; p=991; sigma=6.400000
+Total packed DB size is ~4.976371 MB
+Executing SimplePIR
+Setup...
+Original DB dims: Dims: 2048-by-2048
+After squishing, with compression factor 3: Dims: 2048-by-683
+        Elapsed: 724.114068ms
+                Offline download: 8192.000000 KB
+Building query...
+        Elapsed: 19.216746ms
+                Online upload: 32.000000 KB
+Answering query...
+        Elapsed: 887.645µs
+        Rate: 22425.048859 MB/s
+                Online download: 8.000000 KB
+Reconstructing...
+Success!
+        Elapsed: 2.398097ms
+PASS
+ok      github.com/jf-011101/dytt/third_party/forked/pirs       25.684s
+
+
+
