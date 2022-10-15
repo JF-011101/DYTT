@@ -8,6 +8,7 @@
  */
 
 package db
+
 // #cgo CFLAGS: -O3 -march=native -msse4.1 -maes -mavx2 -mavx
 // #include "pir.h"
 import "C"
@@ -134,7 +135,7 @@ func MakePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database,
 	fmt.Print(result.Error)        // returned error
 	fmt.Print(result.RowsAffected) // processed records count in all batches
 	fmt.Print("copy begin")
-	D.Data.Data = make([]Elem, 100000)
+	D.Data.Data = make([]C.Elem, 100000)
 	fmt.Print("1")
 	D.Data.Data[0] = C.Elem(m[0])
 	// for k, v := range m {

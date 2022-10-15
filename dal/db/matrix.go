@@ -8,7 +8,7 @@ import (
 	"math/big"
 )
 
-type Elem = C.Elem
+type Elemm = C.Elem
 type Matrix struct {
 	Rows uint64
 	Cols uint64

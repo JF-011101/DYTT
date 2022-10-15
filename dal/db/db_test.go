@@ -27,4 +27,12 @@ func TestResetPir(t *testing.T) {
 
 }
 
+func TestA(t *testing.T) {
+	a := make([]uint64, 100000)
+	for k, _ := range a {
+		a[k] = 1
+	}
+	t.Log(a[0])
+}
+
 //go test -timeout 30s -run ^TestResetPir$ github.com/jf-011101/dytt/dal/db
