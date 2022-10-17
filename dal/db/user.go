@@ -81,17 +81,19 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, e
 	var query MsgSlice
 	query.Data = make([]Msg, 1)
 	query.Data[0].Data = make([]*Matrix, 1)
+	a := &Matrix{}
 	lens := len(phoneNumber.Data)
 	fmt.Print("34!")
-	query.Data[0].Data[0].Data = make([]C.Elem, lens)
+	a.Data = make([]C.Elem, lens)
 	var pi SimplePIR
 	fmt.Print("43!")
-	query.Data[0].Data[0].Cols = phoneNumber.Cols
-	query.Data[0].Data[0].Rows = phoneNumber.Rows
+	a.Cols = phoneNumber.Cols
+	a.Rows = phoneNumber.Rows
 	fmt.Print("fwr")
 	for k, v := range phoneNumber.Data {
-		query.Data[0].Data[0].Data[k] = C.Elem(v)
+		a.Data[k] = C.Elem(v)
 	}
+	query.Data[0].Data[0] = a
 	fmt.Print("ecw")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
 	fmt.Print("ans-size:", answer.size())

@@ -101,6 +101,7 @@ func Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *use
 
 func QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
 	resp, err = userClient.QueryUser(ctx, req)
+	fmt.Print("get resp")
 	if err != nil {
 		return nil, err
 	}

@@ -177,7 +177,9 @@ func QueryUser(c *gin.Context) {
 	_, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
 	fmt.Print("ddd:")
 	query = Msg2RpcMsg(&msg)
+	fmt.Print("dds")
 	queryData := Matrix2UserMatrix(query.Data)
+	fmt.Print("ppp")
 	resp, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
@@ -208,10 +210,11 @@ func Msg2RpcMsg(m *Msg) *RpcMsg {
 	fmt.Print("q!")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
+	fmt.Print("rrr")
 	for i := 0; i < lend; i++ {
 		a.Data[i] = uint64(m.Data[0].Data[i])
 	}
-
+	fmt.Print("fff")
 	r := &RpcMsg{Data: a}
 	return r
 }
@@ -219,17 +222,19 @@ func Msg2RpcMsg(m *Msg) *RpcMsg {
 func RpcState2State(r *RpcState) *State {
 	fmt.Print("!2")
 	s := make([]*Matrix, 1)
+	a := &Matrix{}
 	lens := len(r.Data.Data)
 	fmt.Print("lens:", lens)
-	s[0].Data = make([]C.Elem, lens)
+	a.Data = make([]C.Elem, lens)
 	fmt.Print("alloc over!")
-	s[0].Cols = r.Data.Cols
-	s[0].Rows = r.Data.Rows
+	a.Cols = r.Data.Cols
+	a.Rows = r.Data.Rows
 	fmt.Print("oo")
 	for k, v := range r.Data.Data {
-		s[0].Data[k] = C.Elem(v)
+		a.Data[k] = C.Elem(v)
 	}
 	fmt.Print("ww")
+	s[0] = a
 	ans := &State{}
 	ans.Data = s
 	return ans
@@ -237,12 +242,14 @@ func RpcState2State(r *RpcState) *State {
 
 func Matrix2UserMatrix(r *RpcMatrix) *user.Matrix {
 	q := &user.Matrix{}
-
+	fmt.Print(1)
+	q.Data = make([]uint64, len(r.Data))
+	fmt.Print(2)
 	q.Cols = r.Cols
 	q.Rows = r.Rows
 
 	copy(q.Data, r.Data)
-
+	fmt.Print(3)
 	return q
 }
 
