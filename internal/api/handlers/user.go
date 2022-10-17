@@ -102,6 +102,10 @@ func QueryUserBoundary(c *gin.Context) {
 	})
 }
 
+var ShareState db.State
+var P db.Params
+var DbInfo db.DBinfo
+
 func QueryUser(c *gin.Context) {
 	var query *db.RpcMsg
 	pi := &db.SimplePIR{}
@@ -118,11 +122,9 @@ func QueryUser(c *gin.Context) {
 	QueryVar.PhoneNumber = c.PostForm("phone-number")
 	fmt.Print("p:", QueryVar.PhoneNumber)
 	q, _ := strconv.Atoi(QueryVar.PhoneNumber)
-
 	index_to_query := uint64(q)
 
 	fmt.Print("eefe")
-	D.Squish()
 	_, msg := pi.Query(index_to_query, shared_state, p, D.Info)
 	fmt.Print("ddd:")
 	query = db.Msg2RpcMsg(&msg)

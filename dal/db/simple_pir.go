@@ -60,7 +60,7 @@ func (pi *SimplePIR) Init(info DBinfo, p Params) State {
 }
 
 func (pi *SimplePIR) Setup(DB *Database, shared State, p Params) (State, Msg) {
-	A := shared.data[0]
+	A := shared.Data[0]
 	H := MatrixMul(DB.Data, A)
 
 	// map the database entries to [0, p] (rather than [-p/1, p/2]) and then
@@ -86,7 +86,7 @@ func (pi *SimplePIR) FakeSetup(DB *Database, p Params) (State, float64) {
 }
 
 func (pi *SimplePIR) Query(i uint64, shared State, p Params, info DBinfo) (State, Msg) {
-	A := shared.data[0]
+	A := shared.Data[0]
 
 	fmt.Print(1)
 	secret := MatrixRand(p.n, 1, p.logq, 0)
@@ -133,7 +133,7 @@ func (pi *SimplePIR) Answer(DB *Database, query MsgSlice, server State, shared S
 
 func (pi *SimplePIR) Recover(i uint64, batch_index uint64, offline Msg, answer Msg,
 	client State, p Params, info DBinfo) uint64 {
-	secret := client.data[0]
+	secret := client.Data[0]
 	H := offline.Data[0]
 	ans := answer.Data[0]
 

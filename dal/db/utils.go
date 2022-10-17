@@ -7,7 +7,10 @@ import (
 
 // TODO: Change this to hold cryptogrphic keys only
 type State struct {
-	data []*Matrix
+	Data []*Matrix
+}
+type RpcState struct {
+	Data *RpcMatrix
 }
 
 type Msg struct {
@@ -46,7 +49,7 @@ func (m *MsgSlice) size() uint64 {
 func MakeState(elems ...*Matrix) State {
 	st := State{}
 	for _, elem := range elems {
-		st.data = append(st.data, elem)
+		st.Data = append(st.Data, elem)
 	}
 	return st
 }

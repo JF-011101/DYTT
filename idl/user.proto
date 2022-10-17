@@ -39,7 +39,9 @@ message douyin_user_refresh_request {
 message douyin_user_refresh_response {
     int32 status_code = 1;
     Matrix data = 2; // “提示”
-    optional string status_msg = 3; // 返回状态描述
+    State share_state = 3;
+    Dbinfo db_info = 4;
+    optional string status_msg = 5; // 返回状态描述
 }
 
 message User {
@@ -54,6 +56,25 @@ message Matrix {
     uint64 rows = 1; 
     uint64 cols = 2; 
     repeated uint64 data = 3;
+}
+
+message State {
+    uint64 rows = 1; 
+    uint64 cols = 2; 
+    repeated uint64 data = 3;
+}
+
+message Dbinfo {
+    uint64 N = 1;
+    uint64 row_length = 2;
+    uint64 packing = 3;
+    uint64 ne = 4;
+    uint64 x = 5;
+    uint64 p = 6;
+    uint64 logq = 7;
+    uint64 basis = 8;
+    uint64 squishing = 9;
+    uint64 cols = 10;
 }
 
 service UserSrv{

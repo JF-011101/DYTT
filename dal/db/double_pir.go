@@ -73,8 +73,8 @@ func (pi *DoublePIR) Init(info DBinfo, p Params) State {
 }
 
 func (pi *DoublePIR) Setup(DB *Database, shared State, p Params) (State, Msg) {
-	A1 := shared.data[0]
-	A2 := shared.data[1]
+	A1 := shared.Data[0]
+	A2 := shared.Data[1]
 
 	H1 := MatrixMul(DB.Data, A1)
 	H1.Transpose()
@@ -113,8 +113,8 @@ func (pi *DoublePIR) Query(i uint64, shared State, p Params, info DBinfo) (State
 	i1 := (i / p.m) * (info.ne / info.x)
 	i2 := i % p.m
 
-	A1 := shared.data[0]
-	A2 := shared.data[1]
+	A1 := shared.Data[0]
+	A2 := shared.Data[1]
 
 	secret1 := MatrixRand(p.n, 1, p.logq, 0)
 	err1 := MatrixGaussian(p.m, 1)
@@ -140,7 +140,7 @@ func (pi *DoublePIR) Query(i uint64, shared State, p Params, info DBinfo) (State
 			query2.AppendZeros(info.squishing - ((p.l / info.x) % info.squishing))
 		}
 
-		state.data = append(state.data, secret2)
+		state.Data = append(state.Data, secret2)
 		msg.Data = append(msg.Data, query2)
 	}
 
@@ -148,8 +148,8 @@ func (pi *DoublePIR) Query(i uint64, shared State, p Params, info DBinfo) (State
 }
 
 func (pi *DoublePIR) Answer(DB *Database, query MsgSlice, server State, shared State, p Params) Msg {
-	H1 := server.data[0]
-	A2 := shared.data[1]
+	H1 := server.Data[0]
+	A2 := shared.Data[1]
 
 	a1 := new(Matrix)
 	num_queries := uint64(len(query.Data))
@@ -192,14 +192,14 @@ func (pi *DoublePIR) Recover(i uint64, batch_index uint64, offline Msg,
 	answer Msg, client State, p Params, info DBinfo) uint64 {
 	H2 := offline.Data[0]
 	h1 := answer.Data[0]
-	secret1 := client.data[0]
+	secret1 := client.Data[0]
 
 	offset := (info.ne / info.x * 2) * batch_index // for batching
 	var vals []uint64
 	for i := uint64(0); i < info.ne/info.x; i++ {
 		a2 := answer.Data[1+2*i+offset]
 		h2 := answer.Data[2+2*i+offset]
-		secret2 := client.data[1+i]
+		secret2 := client.Data[1+i]
 
 		for j := uint64(0); j < info.x; j++ {
 			state := a2.RowsDeepCopy(j*p.n*p.delta(), p.n*p.delta())
