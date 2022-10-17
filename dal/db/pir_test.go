@@ -21,7 +21,7 @@ func TestDBMediumEntries(t *testing.T) {
 
 	vals := []uint64{1, 2, 3, 4}
 	DB := MakeDB(N, d, &p, vals)
-	if DB.Info.packing != 1 || DB.Info.ne != 1 {
+	if DB.Info.Packing != 1 || DB.Info.Ne != 1 {
 		panic("Should not happen.")
 	}
 
@@ -41,7 +41,7 @@ func TestDBSmallEntries(t *testing.T) {
 
 	vals := []uint64{1, 2, 3, 4}
 	DB := MakeDB(N, d, &p, vals)
-	if DB.Info.packing <= 1 || DB.Info.ne != 1 {
+	if DB.Info.Packing <= 1 || DB.Info.Ne != 1 {
 		panic("Should not happen.")
 	}
 
@@ -61,7 +61,7 @@ func TestDBLargeEntries(t *testing.T) {
 
 	vals := []uint64{1, 2, 3, 4}
 	DB := MakeDB(N, d, &p, vals)
-	if DB.Info.packing != 0 || DB.Info.ne <= 1 {
+	if DB.Info.Packing != 0 || DB.Info.Ne <= 1 {
 		panic("Should not happen.")
 	}
 
@@ -91,7 +91,7 @@ func TestSimplePirBW(t *testing.T) {
 	DB := SetupDB(N, d, &p)
 
 	fmt.Printf("Executing with entries consisting of %d (>= 1) bits; p is %d; packing factor is %d; number of DB elems per entry is %d.\n",
-		d, p.p, DB.Info.packing, DB.Info.ne)
+		d, p.P, DB.Info.Packing, DB.Info.Ne)
 
 	pir.GetBW(DB.Info, p)
 }
@@ -196,7 +196,7 @@ func BenchmarkSimplePirSingle(b *testing.B) {
 	p := pir.PickParams(N, d, SEC_PARAM_T, LOGQ_T)
 
 	i := uint64(0) // index to query
-	if i >= p.l*p.m {
+	if i >= p.L*p.M {
 		panic("Index out of dimensions")
 	}
 
@@ -234,7 +234,7 @@ func BenchmarkSimplePirVaryingDB(b *testing.B) {
 		p := pir.PickParams(N, d, SEC_PARAM_T, LOGQ_T)
 
 		i := uint64(0) // index to query
-		if i >= p.l*p.m {
+		if i >= p.L*p.M {
 			panic("Index out of dimensions")
 		}
 
@@ -293,7 +293,7 @@ func BenchmarkSimplePirBatchLarge(b *testing.B) {
 	p := pir.PickParams(N, d, SEC_PARAM_T, LOGQ_T)
 
 	i := uint64(0) // index to query
-	if i >= p.l*p.m {
+	if i >= p.L*p.M {
 		panic("Index out of dimensions")
 	}
 

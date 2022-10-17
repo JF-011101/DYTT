@@ -86,8 +86,15 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, e
 	query.Data[0].Data[0].Data = make([]C.Elem, lens)
 	var pi SimplePIR
 	fmt.Print("43!")
+	query.Data[0].Data[0].Cols = phoneNumber.Cols
+	query.Data[0].Data[0].Rows = phoneNumber.Rows
+	fmt.Print("fwr")
+	for k, v := range phoneNumber.Data {
+		query.Data[0].Data[0].Data[k] = C.Elem(v)
+	}
+	fmt.Print("ecw")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
-	fmt.Print("ans-size:", answer.size)
+	fmt.Print("ans-size:", answer.size())
 
 	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
 	// 	return nil, err
@@ -160,7 +167,7 @@ func makePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database,
 	fmt.Print(result.Error)        // returned error
 	fmt.Print(result.RowsAffected) // processed records count in all batches
 	fmt.Print("origin data:", m[0], m[10])
-	D.Data = MatrixNew(p.l, p.m)
+	D.Data = MatrixNew(p.L, p.M)
 	fmt.Print("1")
 	//D.Data.Data[0] = C.Elem(m[0])
 	for k, v := range m {

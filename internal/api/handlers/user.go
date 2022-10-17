@@ -82,6 +82,13 @@ func Refresh(c *gin.Context) {
 	fmt.Print("ed")
 	hint.Data.Rows = respon.Data.Rows
 	copy(hint.Data.Data, respon.Data.Data)
+	fmt.Print("ttt")
+
+	assignState(respon.ShareState)
+	fmt.Print("s")
+	assignDbInfo(respon.DbInfo)
+	fmt.Print("k")
+	assignParams(respon.Params)
 
 	fmt.Print("22222222222222222222222")
 	error_type := "刷新失败"
@@ -95,6 +102,45 @@ func Refresh(c *gin.Context) {
 	})
 }
 
+func assignState(u *user.State) {
+	sharedState = &db.RpcState{}
+	m := &db.RpcMatrix{}
+	fmt.Print("qw")
+	lens := len(u.Data)
+	fmt.Print(lens)
+	m.Data = make([]uint64, lens)
+	m.Cols = u.Cols
+	m.Rows = u.Rows
+	fmt.Print("rr")
+	copy(m.Data, u.Data)
+	fmt.Print("gt")
+	sharedState.Data = m
+}
+
+func assignDbInfo(u *user.Dbinfo) {
+	dbInfo = &db.DBinfo{}
+	dbInfo.Basis = u.Basis
+	dbInfo.Cols = u.Cols
+	dbInfo.Logq = u.Logq
+	dbInfo.N = u.N
+	dbInfo.Ne = u.Ne
+	dbInfo.P = u.P
+	dbInfo.Packing = u.Packing
+	dbInfo.Row_length = u.RowLength
+	dbInfo.Squishing = u.Squishing
+	dbInfo.X = u.X
+}
+
+func assignParams(u *user.Params) {
+	p = &db.Params{}
+	p.L = u.L
+	p.Logq = u.Logq
+	p.M = u.M
+	p.N = u.N
+	p.P = u.P
+	p.Sigma = u.Sigma
+}
+
 func QueryUserBoundary(c *gin.Context) {
 	error_type := ""
 	c.HTML(http.StatusOK, "pir.html", gin.H{
@@ -102,22 +148,21 @@ func QueryUserBoundary(c *gin.Context) {
 	})
 }
 
-var ShareState db.State
-var P db.Params
-var DbInfo db.DBinfo
+var sharedState *db.RpcState
+var p *db.Params
+var dbInfo *db.DBinfo
 
 func QueryUser(c *gin.Context) {
 	var query *db.RpcMsg
+	// N := db.Limit
+	// d := uint64(8)
+	// p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
+	// fmt.Print("params:", p)
+
+	// D := db.SetupDB(N, d, &p)
+	// shared_state := pi.Init(D.Info, p)
+	// fmt.Print("ss")
 	pi := &db.SimplePIR{}
-	N := db.Limit
-	d := uint64(8)
-	p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
-	fmt.Print("params:", p)
-
-	D := db.SetupDB(N, d, &p)
-	shared_state := pi.Init(D.Info, p)
-	fmt.Print("ss")
-
 	var QueryVar UserQueryParam
 	QueryVar.PhoneNumber = c.PostForm("phone-number")
 	fmt.Print("p:", QueryVar.PhoneNumber)
@@ -125,7 +170,8 @@ func QueryUser(c *gin.Context) {
 	index_to_query := uint64(q)
 
 	fmt.Print("eefe")
-	_, msg := pi.Query(index_to_query, shared_state, p, D.Info)
+	sstate := RpcState2State(sharedState)
+	_, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
 	fmt.Print("ddd:")
 	query = db.Msg2RpcMsg(&msg)
 	queryData := Matrix2UserMatrix(query.Data)
@@ -141,6 +187,19 @@ func QueryUser(c *gin.Context) {
 	c.HTML(http.StatusOK, "pir.html", gin.H{
 		"error_type": error_type,
 	})
+}
+
+func RpcState2State(r *db.RpcState) *db.State {
+
+	s := make([]*db.Matrix, 1)
+	s[0].Cols = r.Data.Cols
+	s[0].Rows = r.Data.Rows
+	for k, v := range r.Data.Data {
+		s[0].Data[k] = db.Elemm(v)
+	}
+	ans := &db.State{}
+	ans.Data = s
+	return ans
 }
 
 func Matrix2UserMatrix(r *db.RpcMatrix) *user.Matrix {

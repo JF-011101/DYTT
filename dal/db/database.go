@@ -7,21 +7,21 @@ import (
 
 type DBinfo struct {
 	N          uint64 // number of DB entries.
-	row_length uint64 // number of bits per DB entry.
+	Row_length uint64 // number of bits per DB entry.
 
-	packing uint64 // number of DB entries per Z_p elem, if log(p) > DB entry size.
-	ne      uint64 // number of Z_p elems per DB entry, if DB entry size > log(p).
+	Packing uint64 // number of DB entries per Z_p elem, if log(p) > DB entry size.
+	Ne      uint64 // number of Z_p elems per DB entry, if DB entry size > log(p).
 
-	x uint64 // tunable param that governs communication,
+	X uint64 // tunable param that governs communication,
 	// must be in range [1, ne] and must be a divisor of ne;
 	// represents the number of times the scheme is repeated.
-	p    uint64 // plaintext modulus.
-	logq uint64 // (logarithm of) ciphertext modulus.
+	P    uint64 // plaintext modulus.
+	Logq uint64 // (logarithm of) ciphertext modulus.
 
 	// For in-memory DB compression
-	basis     uint64
-	squishing uint64
-	cols      uint64
+	Basis     uint64
+	Squishing uint64
+	Cols      uint64
 }
 
 type Database struct {
@@ -33,38 +33,38 @@ func (DB *Database) Squish() {
 	fmt.Printf("Original DB dims: ")
 	DB.Data.Dim()
 
-	DB.Info.basis = 10
-	DB.Info.squishing = 3
-	DB.Info.cols = DB.Data.Cols
-	DB.Data.Squish(DB.Info.basis, DB.Info.squishing)
+	DB.Info.Basis = 10
+	DB.Info.Squishing = 3
+	DB.Info.Cols = DB.Data.Cols
+	DB.Data.Squish(DB.Info.Basis, DB.Info.Squishing)
 
-	fmt.Printf("After squishing, with compression factor %d: ", DB.Info.squishing)
+	fmt.Printf("After squishing, with compression factor %d: ", DB.Info.Squishing)
 	DB.Data.Dim()
 
 	// Check that params allow for this compression
-	if (DB.Info.p > (1 << DB.Info.basis)) || (DB.Info.logq < DB.Info.basis*DB.Info.squishing) {
+	if (DB.Info.P > (1 << DB.Info.Basis)) || (DB.Info.Logq < DB.Info.Basis*DB.Info.Squishing) {
 		panic("Bad params")
 	}
 }
 
 func (DB *Database) Unsquish() {
-	DB.Data.Unsquish(DB.Info.basis, DB.Info.squishing, DB.Info.cols)
+	DB.Data.Unsquish(DB.Info.Basis, DB.Info.Squishing, DB.Info.Cols)
 }
 
 // Store the database with entries decomposed into Z_p elements, and mapped to [-p/2, p/2]
 // Z_p elements that encode the same database entry are stacked vertically below each other.
 func ReconstructElem(vals []uint64, index uint64, info DBinfo) uint64 {
-	q := uint64(1 << info.logq)
+	q := uint64(1 << info.Logq)
 
 	for i, _ := range vals {
-		vals[i] = (vals[i] + info.p/2) % q
-		vals[i] = vals[i] % info.p
+		vals[i] = (vals[i] + info.P/2) % q
+		vals[i] = vals[i] % info.P
 	}
 
-	val := Reconstruct_from_base_p(info.p, vals)
+	val := Reconstruct_from_base_p(info.P, vals)
 
-	if info.packing > 0 {
-		val = Base_p((1 << info.row_length), val, index%info.packing)
+	if info.Packing > 0 {
+		val = Base_p((1 << info.Row_length), val, index%info.Packing)
 	}
 
 	return val
@@ -78,14 +78,14 @@ func (DB *Database) GetElem(i uint64) uint64 {
 	col := i % DB.Data.Cols
 	row := i / DB.Data.Cols
 
-	if DB.Info.packing > 0 {
-		new_i := i / DB.Info.packing
+	if DB.Info.Packing > 0 {
+		new_i := i / DB.Info.Packing
 		col = new_i % DB.Data.Cols
 		row = new_i / DB.Data.Cols
 	}
 
 	var vals []uint64
-	for j := row * DB.Info.ne; j < (row+1)*DB.Info.ne; j++ {
+	for j := row * DB.Info.Ne; j < (row+1)*DB.Info.Ne; j++ {
 		vals = append(vals, DB.Data.Get(j, col))
 	}
 
@@ -137,30 +137,30 @@ func SetupDB(N, row_length uint64, p *Params) *Database {
 	D := new(Database)
 
 	D.Info.N = N
-	D.Info.row_length = row_length
-	D.Info.p = p.p
-	D.Info.logq = p.logq
+	D.Info.Row_length = row_length
+	D.Info.P = p.P
+	D.Info.Logq = p.Logq
 
-	db_elems, elems_per_entry, entries_per_elem := Num_DB_entries(N, row_length, p.p)
-	D.Info.ne = elems_per_entry
-	D.Info.x = D.Info.ne
-	D.Info.packing = entries_per_elem
+	db_elems, elems_per_entry, entries_per_elem := Num_DB_entries(N, row_length, p.P)
+	D.Info.Ne = elems_per_entry
+	D.Info.X = D.Info.Ne
+	D.Info.Packing = entries_per_elem
 
-	for D.Info.ne%D.Info.x != 0 {
-		D.Info.x += 1
+	for D.Info.Ne%D.Info.X != 0 {
+		D.Info.X += 1
 	}
 
-	D.Info.basis = 0
-	D.Info.squishing = 0
+	D.Info.Basis = 0
+	D.Info.Squishing = 0
 
 	fmt.Printf("Total packed DB size is ~%f MB\n",
-		float64(p.l*p.m)*math.Log2(float64(p.p))/(1024.0*1024.0*8.0))
+		float64(p.L*p.M)*math.Log2(float64(p.P))/(1024.0*1024.0*8.0))
 
-	if db_elems > p.l*p.m {
+	if db_elems > p.L*p.M {
 		panic("Params and database size don't match")
 	}
 
-	if p.l%D.Info.ne != 0 {
+	if p.L%D.Info.Ne != 0 {
 		panic("Number of DB elems per entry must divide DB height")
 	}
 
@@ -169,23 +169,23 @@ func SetupDB(N, row_length uint64, p *Params) *Database {
 
 func MakeRandomDB(N, row_length uint64, p *Params) *Database {
 	D := SetupDB(N, row_length, p)
-	D.Data = MatrixRand(p.l, p.m, 0, p.p)
+	D.Data = MatrixRand(p.L, p.M, 0, p.P)
 
 	// Map DB elems to [-p/2; p/2]
-	D.Data.Sub(p.p / 2)
+	D.Data.Sub(p.P / 2)
 
 	return D
 }
 
 func MakeDB(N, row_length uint64, p *Params, vals []uint64) *Database {
 	D := SetupDB(N, row_length, p)
-	D.Data = MatrixZeros(p.l, p.m)
+	D.Data = MatrixZeros(p.L, p.M)
 
 	if uint64(len(vals)) != N {
 		panic("Bad input DB")
 	}
 
-	if D.Info.packing > 0 {
+	if D.Info.Packing > 0 {
 		// Pack multiple DB elems into each Z_p elem
 		at := uint64(0)
 		cur := uint64(0)
@@ -193,8 +193,8 @@ func MakeDB(N, row_length uint64, p *Params, vals []uint64) *Database {
 		for i, elem := range vals {
 			cur += (elem * coeff)
 			coeff *= (1 << row_length)
-			if ((i+1)%int(D.Info.packing) == 0) || (i == len(vals)-1) {
-				D.Data.Set(cur, at/p.m, at%p.m)
+			if ((i+1)%int(D.Info.Packing) == 0) || (i == len(vals)-1) {
+				D.Data.Set(cur, at/p.M, at%p.M)
 				at += 1
 				cur = 0
 				coeff = 1
@@ -203,14 +203,14 @@ func MakeDB(N, row_length uint64, p *Params, vals []uint64) *Database {
 	} else {
 		// Use multiple Z_p elems to represent each DB elem
 		for i, elem := range vals {
-			for j := uint64(0); j < D.Info.ne; j++ {
-				D.Data.Set(Base_p(D.Info.p, elem, j), (uint64(i)/p.m)*D.Info.ne+j, uint64(i)%p.m)
+			for j := uint64(0); j < D.Info.Ne; j++ {
+				D.Data.Set(Base_p(D.Info.P, elem, j), (uint64(i)/p.M)*D.Info.Ne+j, uint64(i)%p.M)
 			}
 		}
 	}
 
 	// Map DB elems to [-p/2; p/2]
-	D.Data.Sub(p.p / 2)
+	D.Data.Sub(p.P / 2)
 
 	return D
 }

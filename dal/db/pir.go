@@ -40,7 +40,7 @@ func RunFakePIR(pi PIR, DB *Database, p Params, i []uint64,
 	debug.SetGCPercent(-1)
 
 	num_queries := uint64(len(i))
-	if DB.Data.Rows/num_queries < DB.Info.ne {
+	if DB.Data.Rows/num_queries < DB.Info.Ne {
 		panic("Too many queries to handle!")
 	}
 	shared_state := pi.Init(DB.Info, p)
@@ -58,7 +58,7 @@ func RunFakePIR(pi PIR, DB *Database, p Params, i []uint64,
 		query.Data = append(query.Data, q)
 	}
 	printTime(start)
-	online_comm := float64(query.size() * uint64(p.logq) / (8.0 * 1024.0))
+	online_comm := float64(query.size() * uint64(p.Logq) / (8.0 * 1024.0))
 	fmt.Printf("\t\tOnline upload: %f KB\n", online_comm)
 	bw += online_comm
 	runtime.GC()
@@ -74,7 +74,7 @@ func RunFakePIR(pi PIR, DB *Database, p Params, i []uint64,
 		pprof.StopCPUProfile()
 	}
 	rate := printRate(p, elapsed, len(i))
-	online_down := float64(answer.size() * uint64(p.logq) / (8.0 * 1024.0))
+	online_down := float64(answer.size() * uint64(p.Logq) / (8.0 * 1024.0))
 	fmt.Printf("\t\tOnline download: %f KB\n", online_down)
 	bw += online_down
 	online_comm += online_down
@@ -96,10 +96,10 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 	debug.SetGCPercent(-1)
 
 	num_queries := uint64(len(i))
-	if DB.Data.Rows/num_queries < DB.Info.ne {
+	if DB.Data.Rows/num_queries < DB.Info.Ne {
 		panic("Too many queries to handle!")
 	}
-	batch_sz := DB.Data.Rows / (DB.Info.ne * num_queries) * DB.Data.Cols
+	batch_sz := DB.Data.Rows / (DB.Info.Ne * num_queries) * DB.Data.Cols
 	bw := float64(0)
 
 	shared_state := pi.Init(DB.Info, p)
@@ -108,7 +108,7 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 	start := time.Now()
 	server_state, offline_download := pi.Setup(DB, shared_state, p)
 	printTime(start)
-	comm := float64(offline_download.size() * uint64(p.logq) / (8.0 * 1024.0))
+	comm := float64(offline_download.size() * uint64(p.Logq) / (8.0 * 1024.0))
 	fmt.Printf("\t\tOffline download: %f KB\n", comm)
 	bw += comm
 	runtime.GC()
@@ -125,7 +125,7 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 	}
 	runtime.GC()
 	printTime(start)
-	comm = float64(query.size() * uint64(p.logq) / (8.0 * 1024.0))
+	comm = float64(query.size() * uint64(p.Logq) / (8.0 * 1024.0))
 	fmt.Printf("\t\tOnline upload: %f KB\n", comm)
 	bw += comm
 	runtime.GC()
@@ -135,7 +135,7 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 	answer := pi.Answer(DB, query, server_state, shared_state, p)
 	elapsed := printTime(start)
 	rate := printRate(p, elapsed, len(i))
-	comm = float64(answer.size() * uint64(p.logq) / (8.0 * 1024.0))
+	comm = float64(answer.size() * uint64(p.Logq) / (8.0 * 1024.0))
 	fmt.Printf("\t\tOnline download: %f KB\n", comm)
 	bw += comm
 	runtime.GC()

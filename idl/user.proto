@@ -41,7 +41,8 @@ message douyin_user_refresh_response {
     Matrix data = 2; // “提示”
     State share_state = 3;
     Dbinfo db_info = 4;
-    optional string status_msg = 5; // 返回状态描述
+    Params params =5;
+    optional string status_msg = 6; // 返回状态描述
 }
 
 message User {
@@ -75,6 +76,17 @@ message Dbinfo {
     uint64 basis = 8;
     uint64 squishing = 9;
     uint64 cols = 10;
+}
+
+message Params {
+    uint64 N =1;       // LWE secret dimension
+	double Sigma=2;  // LWE error distribution stddev
+
+	uint64 L =3;  // DB height
+	uint64 M =4; // DB width
+
+	uint64 Logq =5; // (logarithm of) ciphertext modulus
+	uint64 P =6;    // plaintext modulus
 }
 
 service UserSrv{
