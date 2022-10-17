@@ -166,7 +166,7 @@ func MatrixMul(a *Matrix, b *Matrix) *Matrix {
 	aCols := C.size_t(a.Cols)
 	bCols := C.size_t(b.Cols)
 
-	C.matMul(outPtr, aPtr, bPtr, aRows, aCols, bCols)
+	C.matMulCli(outPtr, aPtr, bPtr, aRows, aCols, bCols)
 
 	return out
 }
@@ -188,7 +188,7 @@ func MatrixMulVec(a *Matrix, b *Matrix) *Matrix {
 	aRows := C.size_t(a.Rows)
 	aCols := C.size_t(a.Cols)
 
-	C.matMulVec(outPtr, aPtr, bPtr, aRows, aCols)
+	C.matMulVecCli(outPtr, aPtr, bPtr, aRows, aCols)
 
 	return out
 }
@@ -211,7 +211,7 @@ func MatrixMulVecSub(a *Matrix, b *Matrix, ratio, basis, compression uint64) *Ma
 	aPtr := (*C.Elem)(&a.Data[0])
 	bPtr := (*C.Elem)(&b.Data[0])
 
-	C.matMulVecSub(outPtr, aPtr, bPtr, C.size_t(a.Rows), C.size_t(a.Cols), C.size_t(ratio))
+	C.matMulVecSubCli(outPtr, aPtr, bPtr, C.size_t(a.Rows), C.size_t(a.Cols), C.size_t(ratio))
 
 	return out
 }
@@ -235,7 +235,7 @@ func (m *Matrix) Transpose() {
 	rows := C.size_t(m.Rows)
 	cols := C.size_t(m.Cols)
 
-	C.transpose(outPtr, Ptr, rows, cols)
+	C.transposeCli(outPtr, Ptr, rows, cols)
 
 	m.Cols = out.Cols
 	m.Rows = out.Rows

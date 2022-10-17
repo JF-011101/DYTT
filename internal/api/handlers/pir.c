@@ -7,7 +7,7 @@
 #define BASIS       10
 #define MASK        (1<<BASIS)-1
 
-void matMul(Elem *out, const Elem *a, const Elem *b,
+void matMulCli(Elem *out, const Elem *a, const Elem *b,
     size_t aRows, size_t aCols, size_t bCols)
 {
   for (size_t i = 0; i < aRows; i++) {
@@ -19,7 +19,7 @@ void matMul(Elem *out, const Elem *a, const Elem *b,
   }
 }
 
-void matMulVec(Elem *out, const Elem *a, const Elem *b,
+void matMulVecCli(Elem *out, const Elem *a, const Elem *b,
     size_t aRows, size_t aCols)
 {
   Elem tmp;
@@ -32,7 +32,7 @@ void matMulVec(Elem *out, const Elem *a, const Elem *b,
   }
 }
 
-void matMulVecSub(Elem *out, const Elem *a, const Elem *b,
+void matMulVecSubCli(Elem *out, const Elem *a, const Elem *b,
     size_t aRows, size_t aCols, size_t sub)
 {
   Elem tmp;
@@ -51,7 +51,7 @@ void matMulVecSub(Elem *out, const Elem *a, const Elem *b,
   }
 }
 
-void transpose(Elem *out, const Elem *in, size_t rows, size_t cols)
+void transposeCli(Elem *out, const Elem *in, size_t rows, size_t cols)
 {
   for (size_t i = 0; i < rows; i++) {
     for (size_t j = 0; j < cols; j++) {
