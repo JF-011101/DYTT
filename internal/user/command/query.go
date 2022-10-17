@@ -21,15 +21,16 @@ func NewQueryUserService(ctx context.Context) *QueryUserService {
 }
 
 // QueryUser query if user exist
-func (s *QueryUserService) QueryPhoneNumber(req *user.DouyinUserQueryRequest) error {
+func (s *QueryUserService) QueryPhoneNumber(req *user.DouyinUserQueryRequest) (db.RpcMsg, error) {
 	phoneNumber := req.QueryData
 	fmt.Print("123321")
-	users, err := db.QueryPhoneNumber(s.ctx, phoneNumber)
+	ans, err := db.QueryPhoneNumber(s.ctx, phoneNumber)
 	if err != nil {
-		return err
+		return db.RpcMsg{}, err
 	}
-	if len(users) == 0 {
-		return errno.ErrUserNotFound
+	if len(ans.Data.Data) == 0 {
+		fmt.Print("345")
+		return db.RpcMsg{}, errno.ErrUserNotFound
 	}
-	return nil
+	return ans, nil
 }

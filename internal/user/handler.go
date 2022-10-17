@@ -175,13 +175,22 @@ func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRe
 		resp = pack.BuilduserQueryResp(errno.ErrBind)
 		return resp, nil
 	}
-	err = command.NewQueryUserService(ctx).QueryPhoneNumber(req)
+	resp = pack.BuilduserQueryResp(errno.Success)
+	hint, err := command.NewQueryUserService(ctx).QueryPhoneNumber(req)
+	nums := hint.Data.Cols * hint.Data.Rows
+	resp.Ans.Data = make([]uint64, nums)
+	fmt.Print("nums:", nums)
 
+	resp.Ans.Cols = hint.Data.Cols
+	resp.Ans.Rows = hint.Data.Rows
+	copy(resp.Ans.Data, hint.Data.Data)
+
+	fmt.Print("refresh resp:", resp.Ans.Data[0])
 	if err != nil {
 		resp = pack.BuilduserQueryResp(err)
 		return resp, nil
 	}
-	resp = pack.BuilduserQueryResp(errno.Success)
+
 	return resp, nil
 }
 

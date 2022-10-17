@@ -76,8 +76,7 @@ func QueryUser(ctx context.Context, username string) ([]*User, error) {
 }
 
 // QueryPhoneNumber query a number in the db by pir
-func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, error) {
-	res := make([]*User, 0)
+func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) (RpcMsg, error) {
 	var query MsgSlice
 	query.Data = make([]Msg, 1)
 	query.Data[0].Data = make([]*Matrix, 1)
@@ -97,11 +96,12 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, e
 	fmt.Print("ecw")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
 	fmt.Print("ans-size:", answer.size())
+	rpcmsg := Msg2RpcMsg(&answer)
 
 	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
 	// 	return nil, err
 	// }
-	return res, nil
+	return *rpcmsg, nil
 }
 
 // Reset reset the PIR status
