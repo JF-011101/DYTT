@@ -13,6 +13,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/internal/pkg/middleware/jwt"
@@ -101,7 +102,7 @@ func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRe
 	// data := &db.RpcMatrix{}
 	// hint := db.RpcMsg{Data: data}
 	fmt.Print("1!")
-	hint, err := command.NewRefreshUserService(ctx).Refresh(req)
+	hint, dbinfo, params, state, err := command.NewRefreshUserService(ctx).Refresh(req)
 	fmt.Print("hint cols rows:", hint.Data.Cols, hint.Data.Rows)
 
 	if err != nil {
@@ -118,7 +119,55 @@ func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRe
 	copy(resp.Data.Data, hint.Data.Data)
 
 	fmt.Print("refresh resp:", resp.Data.Data[0], resp.Data.Data[10])
+
+	resp.ShareState = assignState(&state)
+	resp.DbInfo = assignDbInfo(&dbinfo)
+	resp.Params = assignParams(&params)
+
 	return resp, nil
+}
+
+func assignState(u *db.RpcState) *user.State {
+	sharedState := &user.State{}
+	m := &db.RpcMatrix{}
+	fmt.Print("qw")
+	lens := len(u.Data.Data)
+	fmt.Print(lens)
+	m.Data = make([]uint64, lens)
+	m.Cols = u.Data.Cols
+	m.Rows = u.Data.Rows
+	fmt.Print("rr")
+	copy(m.Data, u.Data.Data)
+	fmt.Print("gt")
+	sharedState.Cols = m.Cols
+	sharedState.Rows = m.Rows
+	sharedState.Data = m.Data
+	return sharedState
+}
+
+func assignParams(u *db.Params) *user.Params {
+	p := &user.Params{}
+	p.L = u.L
+	p.Logq = u.Logq
+	p.M = u.M
+	p.N = u.N
+	p.P = u.P
+	p.Sigma = u.Sigma
+	return p
+}
+func assignDbInfo(u *db.DBinfo) *user.Dbinfo {
+	dbInfo := &user.Dbinfo{}
+	dbInfo.Basis = u.Basis
+	dbInfo.Cols = u.Cols
+	dbInfo.Logq = u.Logq
+	dbInfo.N = u.N
+	dbInfo.Ne = u.Ne
+	dbInfo.P = u.P
+	dbInfo.Packing = u.Packing
+	dbInfo.RowLength = u.Row_length
+	dbInfo.Squishing = u.Squishing
+	dbInfo.X = u.X
+	return dbInfo
 }
 
 func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {

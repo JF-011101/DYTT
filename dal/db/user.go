@@ -103,19 +103,21 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, e
 }
 
 // Reset reset the PIR status
-func Reset(ctx context.Context) (RpcMsg, error) {
+func Reset(ctx context.Context) (RpcMsg, DBinfo, Params, RpcState, error) {
 	fmt.Print("reset..")
 	data := make([]*Matrix, 1)
 	msg := Msg{Data: data}
 	var err error
 	if msg, err = initPirDatabase(ctx); err != nil {
 		fmt.Print("init pir db err:")
-		return RpcMsg{}, err
+		return RpcMsg{}, DBinfo{}, Params{}, RpcState{}, err
 	}
 	fmt.Print("reset success", msg.size())
-	ans := Msg2RpcMsg(&msg)
-	fmt.Print("ansmsg:", ans.Data.Cols, ans.Data.Rows, ans.Data.Data[0], ans.Data.Data[10])
-	return *ans, nil
+	rpcmsg := Msg2RpcMsg(&msg)
+	rpcstate := State2RpcState(&shared_state)
+
+	fmt.Print("ansmsg:", rpcmsg.Data.Cols, rpcmsg.Data.Rows, rpcmsg.Data.Data[0], rpcmsg.Data.Data[10])
+	return *rpcmsg, PIRDB.Info, p, *rpcstate, nil
 
 }
 
@@ -184,6 +186,33 @@ func AssignHintData(m *RpcMatrix, d []uint64) *RpcMatrix {
 		m.Data[o] = p
 	}
 	return m
+}
+func State2RpcState(m *State) *RpcState {
+	a := &RpcMatrix{}
+
+	fmt.Print("dewd", len(m.Data))
+
+	lens := len(m.Data)
+	fmt.Print("dvae", lens)
+
+	a.Cols = m.Data[0].Cols
+	a.Rows = m.Data[0].Rows
+	fmt.Print("q!")
+	lend := len(m.Data[0].Data)
+	a.Data = make([]uint64, lend)
+	for i := 0; i < lend; i++ {
+		a.Data[i] = uint64(m.Data[0].Data[i])
+	}
+
+	// for i, o := range m.Data[0].Data {
+	// 	a.Data[i] = uint64(o)
+	// }
+	start2 := time.Now()
+	runtime.GC()
+	fmt.Printf("GC took %s\n", time.Since(start2))
+
+	r := &RpcState{Data: a}
+	return r
 }
 
 // Msg2RpcMsg transform Msg to RpcMsg

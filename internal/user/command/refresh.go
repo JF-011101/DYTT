@@ -19,16 +19,16 @@ func NewRefreshUserService(ctx context.Context) *RefreshUserService {
 	}
 }
 
-func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (db.RpcMsg, error) {
+func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (db.RpcMsg, db.DBinfo, db.Params, db.RpcState, error) {
 	fmt.Print("refresh")
-	msg, err := db.Reset(s.ctx)
+	msg, dbinfo, params, rpcstate, err := db.Reset(s.ctx)
 	if err != nil {
 		fmt.Print("123")
-		return db.RpcMsg{}, err
+		return db.RpcMsg{}, db.DBinfo{}, db.Params{}, db.RpcState{}, err
 	}
 	if len(msg.Data.Data) == 0 {
 		fmt.Print("345")
-		return db.RpcMsg{}, errno.ErrUserNotFound
+		return db.RpcMsg{}, db.DBinfo{}, db.Params{}, db.RpcState{}, errno.ErrUserNotFound
 	}
-	return msg, nil
+	return msg, dbinfo, params, rpcstate, nil
 }
