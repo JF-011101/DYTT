@@ -106,8 +106,8 @@ func Refresh(c *gin.Context) {
 }
 
 func assignState(u *user.State) {
-	sharedState = &db.RpcState{}
-	m := &db.RpcMatrix{}
+	sharedState = &RpcState{}
+	m := &RpcMatrix{}
 	fmt.Print("qw")
 	lens := len(u.Data)
 	fmt.Print(lens)
@@ -121,7 +121,7 @@ func assignState(u *user.State) {
 }
 
 func assignDbInfo(u *user.Dbinfo) {
-	dbInfo = &db.DBinfo{}
+	dbInfo = &DBinfo{}
 	dbInfo.Basis = u.Basis
 	dbInfo.Cols = u.Cols
 	dbInfo.Logq = u.Logq
@@ -135,7 +135,7 @@ func assignDbInfo(u *user.Dbinfo) {
 }
 
 func assignParams(u *user.Params) {
-	p = &db.Params{}
+	p = &Params{}
 	p.L = u.L
 	p.Logq = u.Logq
 	p.M = u.M
@@ -151,12 +151,12 @@ func QueryUserBoundary(c *gin.Context) {
 	})
 }
 
-var sharedState *db.RpcState
-var p *db.Params
-var dbInfo *db.DBinfo
+var sharedState *RpcState
+var p *Params
+var dbInfo *DBinfo
 
 func QueryUser(c *gin.Context) {
-	var query *db.RpcMsg
+	var query *RpcMsg
 	// N := db.Limit
 	// d := uint64(8)
 	// p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
@@ -165,7 +165,7 @@ func QueryUser(c *gin.Context) {
 	// D := db.SetupDB(N, d, &p)
 	// shared_state := pi.Init(D.Info, p)
 	// fmt.Print("ss")
-	pi := &db.SimplePIR{}
+	pi := &SimplePIR{}
 	var QueryVar UserQueryParam
 	QueryVar.PhoneNumber = c.PostForm("phone-number")
 	fmt.Print("p:", QueryVar.PhoneNumber)
@@ -176,13 +176,15 @@ func QueryUser(c *gin.Context) {
 	sstate := RpcState2State(sharedState)
 	_, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
 	fmt.Print("ddd:")
-	query = db.Msg2RpcMsg(&msg)
+	query = Msg2RpcMsg(&msg)
 	queryData := Matrix2UserMatrix(query.Data)
-	_, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
+	resp, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
-	error_type := "存在"
-	if err != nil {
+	var error_type string
+	if resp.StatusCode == 0 {
+		error_type = "存在"
+	} else {
 		fmt.Print(err)
 		error_type = "不存在"
 	}
@@ -192,9 +194,31 @@ func QueryUser(c *gin.Context) {
 	})
 }
 
-func RpcState2State(r *db.RpcState) *db.State {
+// Msg2RpcMsg transform Msg to RpcMsg
+func Msg2RpcMsg(m *Msg) *RpcMsg {
+	a := &RpcMatrix{}
+
+	fmt.Print("dewd", len(m.Data))
+
+	lens := len(m.Data)
+	fmt.Print("dvae", lens)
+
+	a.Cols = m.Data[0].Cols
+	a.Rows = m.Data[0].Rows
+	fmt.Print("q!")
+	lend := len(m.Data[0].Data)
+	a.Data = make([]uint64, lend)
+	for i := 0; i < lend; i++ {
+		a.Data[i] = uint64(m.Data[0].Data[i])
+	}
+
+	r := &RpcMsg{Data: a}
+	return r
+}
+
+func RpcState2State(r *RpcState) *State {
 	fmt.Print("!2")
-	s := make([]*db.Matrix, 1)
+	s := make([]*Matrix, 1)
 	lens := len(r.Data.Data)
 	fmt.Print("lens:", lens)
 	s[0].Data = make([]C.Elem, lens)
@@ -203,15 +227,15 @@ func RpcState2State(r *db.RpcState) *db.State {
 	s[0].Rows = r.Data.Rows
 	fmt.Print("oo")
 	for k, v := range r.Data.Data {
-		s[0].Data[k] = db.Elemm(v)
+		s[0].Data[k] = C.Elem(v)
 	}
 	fmt.Print("ww")
-	ans := &db.State{}
+	ans := &State{}
 	ans.Data = s
 	return ans
 }
 
-func Matrix2UserMatrix(r *db.RpcMatrix) *user.Matrix {
+func Matrix2UserMatrix(r *RpcMatrix) *user.Matrix {
 	q := &user.Matrix{}
 
 	q.Cols = r.Cols
