@@ -20,14 +20,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"github.com/jf-011101/dytt/internal/api/rpc"
 	"github.com/jf-011101/dytt/pkg/errno"
 )
 
-var hint db.RpcMsg
+var hint RpcMsg
 
 func Register(c *gin.Context) {
 	var registerVar UserRegisterParam
@@ -76,8 +75,8 @@ func Refresh(c *gin.Context) {
 	respon, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
 
 	fmt.Print(respon.Data.Data[0])
-	hint = db.RpcMsg{}
-	hint.Data = &db.RpcMatrix{}
+	hint = RpcMsg{}
+	hint.Data = &RpcMatrix{}
 	nums := respon.Data.Cols * respon.Data.Rows
 	hint.Data.Data = make([]uint64, nums)
 	fmt.Print("h!!!", nums)
@@ -174,17 +173,18 @@ func QueryUser(c *gin.Context) {
 
 	fmt.Print("eefe")
 	sstate := RpcState2State(sharedState)
-	_, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
+	client, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
 	fmt.Print("ddd:")
 	query = Msg2RpcMsg(&msg)
 	fmt.Print("dds")
 	queryData := Matrix2UserMatrix(query.Data)
 	fmt.Print("ppp")
-	resp, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
+	resp, _ := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
-	as := db.RpcMsg{}
-	as.Data = &db.RpcMatrix{}
+
+	as := &RpcMsg{}
+	as.Data = &RpcMatrix{}
 	nums := resp.Ans.Cols * resp.Ans.Rows
 	as.Data.Data = make([]uint64, nums)
 	fmt.Print("h!!!", nums)
@@ -193,25 +193,16 @@ func QueryUser(c *gin.Context) {
 	as.Data.Rows = resp.Ans.Rows
 	copy(as.Data.Data, resp.Ans.Data)
 	fmt.Print("ttt")
-	ass:=RpcMsg2Msg(as)
+	ass := RpcMsg2Msg(as)
 
+	download := RpcMsg2Msg(&hint)
 
-	val := pi.Recover(index_to_query, 0, hint, as,
-		client_state, p, DB.Info)
-
-	if DB.GetElem(index_to_query) != val {
-		fmt.Printf("Batch %d (querying index %d -- row should be >= %d): Got %d instead of %d\n",
-			index, index_to_query, DB.Data.Rows/4, val, DB.GetElem(index_to_query))
-		panic("Reconstruct failed!")
-	}
+	val := pi.Recover(index_to_query, 0, *download, *ass,
+		client, *p, *dbInfo)
 
 	var error_type string
-	if resp.StatusCode == 0 {
-		error_type = "存在"
-	} else {
-		fmt.Print(err)
-		error_type = "不存在"
-	}
+
+	error_type = string(val)
 
 	c.HTML(http.StatusOK, "pir.html", gin.H{
 		"error_type": error_type,
