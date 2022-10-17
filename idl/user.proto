@@ -29,7 +29,8 @@ message douyin_user_query_request {
 }
 message douyin_user_query_response {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败
-    optional string status_msg = 2; // 返回状态描述
+    Matrix ans =2;
+    optional string status_msg = 3; // 返回状态描述
 }
 
 message douyin_user_refresh_request {
