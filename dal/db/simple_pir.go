@@ -88,16 +88,22 @@ func (pi *SimplePIR) FakeSetup(DB *Database, p Params) (State, float64) {
 func (pi *SimplePIR) Query(i uint64, shared State, p Params, info DBinfo) (State, Msg) {
 	A := shared.data[0]
 
+	fmt.Print(1)
 	secret := MatrixRand(p.n, 1, p.logq, 0)
+	fmt.Print(2)
 	err := MatrixGaussian(p.m, 1)
+	fmt.Print(3)
 	query := MatrixMul(A, secret)
+	fmt.Print(4)
 	query.MatrixAdd(err)
+	fmt.Print(5)
 	query.Data[i%p.m] += C.Elem(p.Delta())
-
+	fmt.Print(6, p.m, 9, info.squishing)
 	// Pad the query to match the dimensions of the compressed DB
 	if p.m%info.squishing != 0 {
 		query.AppendZeros(info.squishing - (p.m % info.squishing))
 	}
+	fmt.Print(7)
 
 	return MakeState(secret), MakeMsg(query)
 }

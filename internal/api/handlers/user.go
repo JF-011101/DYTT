@@ -72,14 +72,17 @@ func Refresh(c *gin.Context) {
 	fmt.Print("11111111111111111111111")
 	respon, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
 
-	hint.Data = make([]db.RpcMatrix, 1)
-	fmt.Print("h!!!")
+	fmt.Print(respon.Data.Data[0])
+	hint = db.RpcMsg{}
+	hint.Data = &db.RpcMatrix{}
+	nums := respon.Data.Cols * respon.Data.Rows
+	hint.Data.Data = make([]uint64, nums)
+	fmt.Print("h!!!", nums)
 	hint.Data.Cols = respon.Data.Cols
 	fmt.Print("ed")
 	hint.Data.Rows = respon.Data.Rows
-	hint.Data = db.AssignHintData(hint.Data, respon.Data.Data)
+	copy(hint.Data.Data, respon.Data.Data)
 
-	fmt.Print(hint.Data.Cols)
 	fmt.Print("22222222222222222222222")
 	error_type := "刷新失败"
 	if err != nil {
@@ -102,21 +105,26 @@ func QueryUserBoundary(c *gin.Context) {
 func QueryUser(c *gin.Context) {
 	var query *db.RpcMsg
 	pi := &db.SimplePIR{}
-	N := uint64(10)
+	N := db.Limit
 	d := uint64(8)
 	p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
+	fmt.Print("params:", p)
 
 	D := db.SetupDB(N, d, &p)
-
 	shared_state := pi.Init(D.Info, p)
+	fmt.Print("ss")
 
 	var QueryVar UserQueryParam
 	QueryVar.PhoneNumber = c.PostForm("phone-number")
+	fmt.Print("p:", QueryVar.PhoneNumber)
 	q, _ := strconv.Atoi(QueryVar.PhoneNumber)
 
 	index_to_query := uint64(q)
-	client_state, msg := pi.Query(index_to_query, shared_state, p, D.Info)
-	fmt.Print(client_state)
+
+	fmt.Print("eefe")
+	D.Squish()
+	_, msg := pi.Query(index_to_query, shared_state, p, D.Info)
+	fmt.Print("ddd:")
 	query = db.Msg2RpcMsg(&msg)
 	queryData := Matrix2UserMatrix(query.Data)
 	_, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{

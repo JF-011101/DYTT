@@ -87,7 +87,7 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) ([]*User, e
 	var pi SimplePIR
 	fmt.Print("43!")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
-	fmt.Print("ans:", answer)
+	fmt.Print("ans-size:", answer.size)
 
 	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
 	// 	return nil, err
