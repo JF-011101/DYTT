@@ -25,7 +25,7 @@ message douyin_user_response {
     User user = 3; // 用户信息
 }
 message douyin_user_query_request {
-    uint64 phone_number = 1; 
+    Matrix query_data = 1; 
 }
 message douyin_user_query_response {
     int32 status_code = 1; // 状态码，0-成功，其他值-失败
@@ -38,7 +38,7 @@ message douyin_user_refresh_request {
 
 message douyin_user_refresh_response {
     int32 status_code = 1;
-    repeated Matrix data = 2; // “提示”
+    Matrix data = 2; // “提示”
     optional string status_msg = 3; // 返回状态描述
 }
 

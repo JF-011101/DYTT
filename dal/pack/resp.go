@@ -73,7 +73,8 @@ func userQueryResp(err errno.ErrNo) *user.DouyinUserQueryResponse {
 }
 
 func userRefreshResp(err errno.ErrNo) *user.DouyinUserRefreshResponse {
-	return &user.DouyinUserRefreshResponse{StatusCode: int32(err.ErrCode), Data: nil, StatusMsg: &err.ErrMsg}
+	data := &user.Matrix{}
+	return &user.DouyinUserRefreshResponse{StatusCode: int32(err.ErrCode), Data: data, StatusMsg: &err.ErrMsg}
 }
 
 // BuilduserResp build userResp from error

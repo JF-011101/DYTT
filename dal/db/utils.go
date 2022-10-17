@@ -14,6 +14,10 @@ type Msg struct {
 	Data []*Matrix
 }
 
+type RpcMsg struct {
+	Data *RpcMatrix
+}
+
 // func NewMsg() Msg {
 // 	data := make([]*Matrix, 0, 1)
 // 	return Msg{Data: data}
@@ -28,12 +32,12 @@ func (m *Msg) size() uint64 {
 }
 
 type MsgSlice struct {
-	data []Msg
+	Data []Msg
 }
 
 func (m *MsgSlice) size() uint64 {
 	sz := uint64(0)
-	for _, d := range m.data {
+	for _, d := range m.Data {
 		sz += d.size()
 	}
 	return sz

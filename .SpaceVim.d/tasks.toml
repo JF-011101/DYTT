@@ -1,0 +1,9 @@
+[etcd]
+  command = 'etcd'
+  isBackground = true
+[api.server]
+  command = 'make api.server'
+  isBackground = true
+
+[user.server]
+  command = 'make user.server'

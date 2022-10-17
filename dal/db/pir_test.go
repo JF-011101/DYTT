@@ -98,13 +98,16 @@ func TestSimplePirBW(t *testing.T) {
 
 // Test SimplePIR correctness on DB with short entries.
 func TestSimplePir(t *testing.T) {
-	N := uint64(1 << 20)
+	N := uint64(10)
 	d := uint64(8)
 	pir := SimplePIR{}
 	p := pir.PickParams(N, d, SEC_PARAM_T, LOGQ_T)
+	t.Log(p)
 
 	DB := MakeRandomDB(N, d, &p)
-	RunPIR(&pir, DB, p, []uint64{262144})
+	t.Log(DB)
+	t.Log(DB.Data.Data)
+	RunPIR(&pir, DB, p, []uint64{8})
 }
 
 func TestSimplePir2(t *testing.T) {

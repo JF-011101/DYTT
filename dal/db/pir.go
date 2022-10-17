@@ -55,7 +55,7 @@ func RunFakePIR(pi PIR, DB *Database, p Params, i []uint64,
 	var query MsgSlice
 	for index, _ := range i {
 		_, q := pi.Query(i[index], shared_state, p, DB.Info)
-		query.data = append(query.data, q)
+		query.Data = append(query.Data, q)
 	}
 	printTime(start)
 	online_comm := float64(query.size() * uint64(p.logq) / (8.0 * 1024.0))
@@ -121,7 +121,7 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 		index_to_query := i[index] + uint64(index)*batch_sz
 		cs, q := pi.Query(index_to_query, shared_state, p, DB.Info)
 		client_state = append(client_state, cs)
-		query.data = append(query.data, q)
+		query.Data = append(query.Data, q)
 	}
 	runtime.GC()
 	printTime(start)

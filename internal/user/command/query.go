@@ -22,7 +22,7 @@ func NewQueryUserService(ctx context.Context) *QueryUserService {
 
 // QueryUser query if user exist
 func (s *QueryUserService) QueryPhoneNumber(req *user.DouyinUserQueryRequest) error {
-	phoneNumber := req.PhoneNumber
+	phoneNumber := req.QueryData
 	fmt.Print("123321")
 	users, err := db.QueryPhoneNumber(s.ctx, phoneNumber)
 	if err != nil {

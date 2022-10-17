@@ -15,6 +15,12 @@ type Matrix struct {
 	Data []C.Elem
 }
 
+type RpcMatrix struct {
+	Rows uint64
+	Cols uint64
+	Data []uint64
+}
+
 func (m *Matrix) size() uint64 {
 	return m.Rows * m.Cols
 }
@@ -39,6 +45,13 @@ func MatrixNew(rows uint64, cols uint64) *Matrix {
 	return out
 }
 
+func RpcMatrixNew(rows uint64, cols uint64) *RpcMatrix {
+	out := new(RpcMatrix)
+	out.Rows = rows
+	out.Cols = cols
+	out.Data = make([]uint64, rows*cols)
+	return out
+}
 func MatrixNewNoAlloc(rows uint64, cols uint64) *Matrix {
 	out := new(Matrix)
 	out.Rows = rows
@@ -52,7 +65,6 @@ func MatrixRand(rows uint64, cols uint64, logmod uint64, mod uint64) *Matrix {
 	if mod == 0 {
 		m = big.NewInt(1 << logmod)
 	}
-	fmt.Print("qqqqq", len(out.Data))
 	for i := 0; i < len(out.Data); i++ {
 		out.Data[i] = C.Elem(RandInt(m).Uint64())
 	}

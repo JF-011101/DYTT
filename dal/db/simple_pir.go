@@ -104,12 +104,12 @@ func (pi *SimplePIR) Query(i uint64, shared State, p Params, info DBinfo) (State
 
 func (pi *SimplePIR) Answer(DB *Database, query MsgSlice, server State, shared State, p Params) Msg {
 	ans := new(Matrix)
-	num_queries := uint64(len(query.data)) // number of queries in the batch of queries
+	num_queries := uint64(len(query.Data)) // number of queries in the batch of queries
 	batch_sz := DB.Data.Rows / num_queries // how many rows of the database each query in the batch maps to
 
 	last := uint64(0)
 	// Run SimplePIR's answer routine for each query in the batch
-	for batch, q := range query.data {
+	for batch, q := range query.Data {
 		if batch == int(num_queries-1) {
 			batch_sz = DB.Data.Rows - last
 		}

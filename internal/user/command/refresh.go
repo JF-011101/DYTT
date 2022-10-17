@@ -19,14 +19,16 @@ func NewRefreshUserService(ctx context.Context) *RefreshUserService {
 	}
 }
 
-func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (db.Msg, error) {
+func (s *RefreshUserService) Refresh(req *user.DouyinUserRefreshRequest) (db.RpcMsg, error) {
 	fmt.Print("refresh")
-	userPhoneNumber, err := db.Reset(s.ctx)
+	msg, err := db.Reset(s.ctx)
 	if err != nil {
-		return db.Msg{}, err
+		fmt.Print("123")
+		return db.RpcMsg{}, err
 	}
-	if len(userPhoneNumber.Data) == 0 {
-		return db.Msg{}, errno.ErrUserNotFound
+	if len(msg.Data.Data) == 0 {
+		fmt.Print("345")
+		return db.RpcMsg{}, errno.ErrUserNotFound
 	}
-	return userPhoneNumber, nil
+	return msg, nil
 }

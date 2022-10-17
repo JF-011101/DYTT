@@ -91,12 +91,9 @@ func Login(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user
 
 func Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
 	resp, err = userClient.Refresh(ctx, req)
+
 	if err != nil {
 		return nil, err
-	}
-
-	if resp.StatusCode != 0 {
-		return nil, errno.NewErrNo(int(resp.StatusCode), *resp.StatusMsg)
 	}
 
 	return resp, nil

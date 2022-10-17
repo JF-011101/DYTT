@@ -11,6 +11,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
@@ -18,7 +19,6 @@ import (
 	"github.com/jf-011101/dytt/internal/pkg/ttviper"
 	"github.com/jf-011101/dytt/internal/user/command"
 	"github.com/jf-011101/dytt/pkg/errno"
-	"github.com/jf-011101/dytt/dal/db"
 )
 
 var (
@@ -98,29 +98,31 @@ func (s *UserSrvImpl) Login(ctx context.Context, req *user.DouyinUserRegisterReq
 }
 
 func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
-	data := make([]*db.Matrix, 1)
-	hint := db.Msg{Data: data}
-	hint, err = command.NewRefreshUserService(ctx).Refresh(req)
+	// data := &db.RpcMatrix{}
+	// hint := db.RpcMsg{Data: data}
+	fmt.Print("1!")
+	hint, err := command.NewRefreshUserService(ctx).Refresh(req)
+	fmt.Print("hint cols rows:", hint.Data.Cols, hint.Data.Rows)
 
 	if err != nil {
 		resp = pack.BuilduserRefreshResp(err)
 		return resp, nil
 	}
 	resp = pack.BuilduserRefreshResp(errno.Success)
+	nums := hint.Data.Cols * hint.Data.Rows
+	resp.Data.Data = make([]uint64, nums)
+	fmt.Print("nums:", nums)
 
-	for k, v := range hint.Data {
-		resp.Data[k].Cols = v.Cols
-		resp.Data[k].Rows = v.Rows
-		for o, p := range v.Data {
-			resp.Data[k].Data[o] = uint64(p)
-		}
+	resp.Data.Cols = hint.Data.Cols
+	resp.Data.Rows = hint.Data.Rows
+	copy(resp.Data.Data, hint.Data.Data)
 
-	}
+	fmt.Print("refresh resp:", resp.Data.Data[0], resp.Data.Data[10])
 	return resp, nil
 }
 
 func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
-	if req.PhoneNumber == 0 {
+	if len(req.QueryData.Data) == 0 {
 		resp = pack.BuilduserQueryResp(errno.ErrBind)
 		return resp, nil
 	}

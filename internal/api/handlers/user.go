@@ -24,7 +24,7 @@ import (
 	"github.com/jf-011101/dytt/pkg/errno"
 )
 
-var hint db.Msg
+var hint db.RpcMsg
 
 func Register(c *gin.Context) {
 	var registerVar UserRegisterParam
@@ -70,16 +70,16 @@ func Login(c *gin.Context) {
 
 func Refresh(c *gin.Context) {
 	fmt.Print("11111111111111111111111")
-	resp, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
-	for k, v := range resp.Data {
-		hint.Data[k].Cols = v.Cols
-		hint.Data[k].Rows = v.Rows
-		for o, p := range v.Data {
-			hint.Data[k].Data[o] = db.Elem(p)
-		}
+	respon, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
 
-	}
-	fmt.Print(hint)
+	hint.Data = make([]db.RpcMatrix, 1)
+	fmt.Print("h!!!")
+	hint.Data.Cols = respon.Data.Cols
+	fmt.Print("ed")
+	hint.Data.Rows = respon.Data.Rows
+	hint.Data = db.AssignHintData(hint.Data, respon.Data.Data)
+
+	fmt.Print(hint.Data.Cols)
 	fmt.Print("22222222222222222222222")
 	error_type := "刷新失败"
 	if err != nil {
@@ -100,12 +100,27 @@ func QueryUserBoundary(c *gin.Context) {
 }
 
 func QueryUser(c *gin.Context) {
+	var query *db.RpcMsg
+	pi := &db.SimplePIR{}
+	N := uint64(10)
+	d := uint64(8)
+	p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
+
+	D := db.SetupDB(N, d, &p)
+
+	shared_state := pi.Init(D.Info, p)
+
 	var QueryVar UserQueryParam
 	QueryVar.PhoneNumber = c.PostForm("phone-number")
 	q, _ := strconv.Atoi(QueryVar.PhoneNumber)
 
+	index_to_query := uint64(q)
+	client_state, msg := pi.Query(index_to_query, shared_state, p, D.Info)
+	fmt.Print(client_state)
+	query = db.Msg2RpcMsg(&msg)
+	queryData := Matrix2UserMatrix(query.Data)
 	_, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
-		PhoneNumber: uint64(q),
+		QueryData: queryData,
 	})
 	error_type := "存在"
 	if err != nil {
@@ -116,6 +131,17 @@ func QueryUser(c *gin.Context) {
 	c.HTML(http.StatusOK, "pir.html", gin.H{
 		"error_type": error_type,
 	})
+}
+
+func Matrix2UserMatrix(r *db.RpcMatrix) *user.Matrix {
+	q := &user.Matrix{}
+
+	q.Cols = r.Cols
+	q.Rows = r.Rows
+
+	copy(q.Data, r.Data)
+
+	return q
 }
 
 // 传递 获取注册用户`UserID`操作 的上下文至 User 服务的 RPC 客户端, 并获取相应的响应.

@@ -152,11 +152,11 @@ func (pi *DoublePIR) Answer(DB *Database, query MsgSlice, server State, shared S
 	A2 := shared.data[1]
 
 	a1 := new(Matrix)
-	num_queries := uint64(len(query.data))
+	num_queries := uint64(len(query.Data))
 	batch_sz := DB.Data.Rows / num_queries
 
 	last := uint64(0)
-	for batch, q := range query.data {
+	for batch, q := range query.Data {
 		q1 := q.Data[0]
 		if batch == int(num_queries-1) {
 			batch_sz = DB.Data.Rows - last
@@ -174,7 +174,7 @@ func (pi *DoublePIR) Answer(DB *Database, query MsgSlice, server State, shared S
 	h1 := MatrixMul(a1, A2)
 	msg := MakeMsg(h1)
 
-	for _, q := range query.data {
+	for _, q := range query.Data {
 		for j := uint64(0); j < DB.Info.ne/DB.Info.x; j++ {
 			q2 := q.Data[1+j]
 			a2 := MatrixMulVecSub(H1, q2, p.p/2, 10, 3)
