@@ -25,7 +25,9 @@ func (s *QueryUserService) QueryPhoneNumber(req *user.DouyinUserQueryRequest) (d
 	phoneNumber := req.QueryData
 	fmt.Print("123321")
 	ans, err := db.QueryPhoneNumber(s.ctx, phoneNumber)
+	fmt.Print("www")
 	if err != nil {
+		fmt.Print("098", err)
 		return db.RpcMsg{}, err
 	}
 	if len(ans.Data.Data) == 0 {

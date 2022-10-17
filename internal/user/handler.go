@@ -175,9 +175,12 @@ func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRe
 		resp = pack.BuilduserQueryResp(errno.ErrBind)
 		return resp, nil
 	}
-	resp = pack.BuilduserQueryResp(errno.Success)
+
 	hint, err := command.NewQueryUserService(ctx).QueryPhoneNumber(req)
+	resp = pack.BuilduserQueryResp(errno.Success)
+	fmt.Print(999)
 	nums := hint.Data.Cols * hint.Data.Rows
+	fmt.Print(nums)
 	resp.Ans.Data = make([]uint64, nums)
 	fmt.Print("nums:", nums)
 

@@ -97,6 +97,7 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) (RpcMsg, er
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
 	fmt.Print("ans-size:", answer.size())
 	rpcmsg := Msg2RpcMsg(&answer)
+	fmt.Print("543")
 
 	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
 	// 	return nil, err
