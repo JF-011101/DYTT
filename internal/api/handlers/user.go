@@ -9,6 +9,9 @@
 
 package handlers
 
+// #cgo CFLAGS: -O3 -march=native -msse4.1 -maes -mavx2 -mavx
+// #include "pir.h"
+import "C"
 import (
 	"context"
 	"fmt"
@@ -190,13 +193,19 @@ func QueryUser(c *gin.Context) {
 }
 
 func RpcState2State(r *db.RpcState) *db.State {
-
+	fmt.Print("!2")
 	s := make([]*db.Matrix, 1)
+	lens := len(r.Data.Data)
+	fmt.Print("lens:", lens)
+	s[0].Data = make([]C.Elem, lens)
+	fmt.Print("alloc over!")
 	s[0].Cols = r.Data.Cols
 	s[0].Rows = r.Data.Rows
+	fmt.Print("oo")
 	for k, v := range r.Data.Data {
 		s[0].Data[k] = db.Elemm(v)
 	}
+	fmt.Print("ww")
 	ans := &db.State{}
 	ans.Data = s
 	return ans
