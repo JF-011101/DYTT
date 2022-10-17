@@ -183,6 +183,28 @@ func QueryUser(c *gin.Context) {
 	resp, err := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
+	as := db.RpcMsg{}
+	as.Data = &db.RpcMatrix{}
+	nums := resp.Ans.Cols * resp.Ans.Rows
+	as.Data.Data = make([]uint64, nums)
+	fmt.Print("h!!!", nums)
+	as.Data.Cols = resp.Ans.Cols
+	fmt.Print("ed")
+	as.Data.Rows = resp.Ans.Rows
+	copy(as.Data.Data, resp.Ans.Data)
+	fmt.Print("ttt")
+	ass:=RpcMsg2Msg(as)
+
+
+	val := pi.Recover(index_to_query, 0, hint, as,
+		client_state, p, DB.Info)
+
+	if DB.GetElem(index_to_query) != val {
+		fmt.Printf("Batch %d (querying index %d -- row should be >= %d): Got %d instead of %d\n",
+			index, index_to_query, DB.Data.Rows/4, val, DB.GetElem(index_to_query))
+		panic("Reconstruct failed!")
+	}
+
 	var error_type string
 	if resp.StatusCode == 0 {
 		error_type = "存在"
@@ -236,6 +258,27 @@ func RpcState2State(r *RpcState) *State {
 	fmt.Print("ww")
 	s[0] = a
 	ans := &State{}
+	ans.Data = s
+	return ans
+}
+
+func RpcMsg2Msg(r *RpcMsg) *Msg {
+	fmt.Print("!2")
+	s := make([]*Matrix, 1)
+	a := &Matrix{}
+	lens := len(r.Data.Data)
+	fmt.Print("lens:", lens)
+	a.Data = make([]C.Elem, lens)
+	fmt.Print("alloc over!")
+	a.Cols = r.Data.Cols
+	a.Rows = r.Data.Rows
+	fmt.Print("oo")
+	for k, v := range r.Data.Data {
+		a.Data[k] = C.Elem(v)
+	}
+	fmt.Print("ww")
+	s[0] = a
+	ans := &Msg{}
 	ans.Data = s
 	return ans
 }
