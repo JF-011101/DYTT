@@ -67,9 +67,9 @@ func InitDB() {
 		log.Panic(err.Error())
 	}
 
-	// if err := DB.AutoMigrate(&User{}, &Video{}, &Comment{}, &Relation{}); err != nil {
-	// 	log.Panic(err.Error())
-	// }
+	if err := DB.AutoMigrate(&User{}, &Video{}, &Comment{}, &Relation{}); err != nil {
+		log.Panic(err.Error())
+	}
 
 	sqlDB, err := DB.DB()
 	if err != nil {

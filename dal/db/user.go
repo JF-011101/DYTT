@@ -82,22 +82,22 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) (RpcMsg, er
 	query.Data[0].Data = make([]*Matrix, 1)
 	a := &Matrix{}
 	lens := len(phoneNumber.Data)
-	fmt.Print("34!")
+	fmt.Print("--dbuserQueryPhoneNumber--")
 	a.Data = make([]C.Elem, lens)
 	var pi SimplePIR
-	fmt.Print("43!")
+	fmt.Print("--2--")
 	a.Cols = phoneNumber.Cols
 	a.Rows = phoneNumber.Rows
-	fmt.Print("fwr")
+	fmt.Print("--3--")
 	for k, v := range phoneNumber.Data {
 		a.Data[k] = C.Elem(v)
 	}
 	query.Data[0].Data[0] = a
-	fmt.Print("ecw")
+	fmt.Print("--4--")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
 	fmt.Print("ans-size:", answer.size())
 	rpcmsg := Msg2RpcMsg(&answer)
-	fmt.Print("543")
+	fmt.Print("--5--")
 
 	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
 	// 	return nil, err
@@ -107,7 +107,7 @@ func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) (RpcMsg, er
 
 // Reset reset the PIR status
 func Reset(ctx context.Context) (RpcMsg, DBinfo, Params, RpcState, error) {
-	fmt.Print("reset..")
+	fmt.Print("--dbuserReset--")
 	data := make([]*Matrix, 1)
 	msg := Msg{Data: data}
 	var err error
@@ -133,14 +133,15 @@ var server_state State
 var shared_state State
 var p Params
 
-const Limit uint64 = 15
+const Limit uint64 = 100000
+const D uint64 = 8
 
 func initPirDatabase(ctx context.Context) (Msg, error) {
 	N := Limit
-	d := uint64(8)
+	d := D
 	spir := SimplePIR{}
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
-	fmt.Print("pickparams finished:", p)
+	fmt.Print("--pickparams finished:--", p)
 	var err error
 
 	if PIRDB, err = makePirDB(ctx, N, d, &p); err != nil {
@@ -157,7 +158,7 @@ func initPirDatabase(ctx context.Context) (Msg, error) {
 
 func makePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database, error) {
 	D := SetupDB(N, row_length, p)
-	fmt.Print("pirdbinfo:", D.Info)
+	fmt.Print("--pirdbinfo--:", D.Info)
 	//D.Data = pir.MatrixRand(p.l, p.m, 0, p.p)
 
 	// Map DB elems to [-p/2; p/2]
@@ -193,14 +194,14 @@ func AssignHintData(m *RpcMatrix, d []uint64) *RpcMatrix {
 func State2RpcState(m *State) *RpcState {
 	a := &RpcMatrix{}
 
-	fmt.Print("dewd", len(m.Data))
+	fmt.Print("--dbUserSta2RpcSta--", len(m.Data))
 
 	lens := len(m.Data)
-	fmt.Print("dvae", lens)
+	fmt.Print("--2--", lens)
 
 	a.Cols = m.Data[0].Cols
 	a.Rows = m.Data[0].Rows
-	fmt.Print("q!")
+	fmt.Print("--3--")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
 	for i := 0; i < lend; i++ {
@@ -222,14 +223,14 @@ func State2RpcState(m *State) *RpcState {
 func Msg2RpcMsg(m *Msg) *RpcMsg {
 	a := &RpcMatrix{}
 
-	fmt.Print("dewd", len(m.Data))
+	fmt.Print("--dbUserMsg2RpcMsg--", len(m.Data))
 
 	lens := len(m.Data)
-	fmt.Print("dvae", lens)
+	fmt.Print("--2--", lens)
 
 	a.Cols = m.Data[0].Cols
 	a.Rows = m.Data[0].Rows
-	fmt.Print("q!")
+	fmt.Print("--3--")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
 	for i := 0; i < lend; i++ {

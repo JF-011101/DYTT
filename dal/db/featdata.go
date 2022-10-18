@@ -50,8 +50,8 @@ func GenData() {
 			var insertRecords []User
 			for i := first; i < last; i++ {
 				a := time.Now().UnixNano() + GetGID() + int64(i) + 1
-				b := time.Now().UnixNano() + GetGID() + int64(i) + 2
-				n1 := fmt.Sprintf("1%05v%05v", rand.New(rand.NewSource(a)).Int31n(100000), rand.New(rand.NewSource(b)).Int31n(100000))
+
+				n1 := fmt.Sprintf("%02v", rand.New(rand.NewSource(a)).Int31n(100))
 				n2, _ := strconv.ParseUint(n1, 10, 64)
 				insertRecords = append(insertRecords,
 					User{

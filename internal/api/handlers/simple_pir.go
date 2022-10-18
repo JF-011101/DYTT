@@ -138,21 +138,27 @@ func (pi *SimplePIR) Recover(i uint64, batch_index uint64, offline Msg, answer M
 	secret := client.Data[0]
 	H := offline.Data[0]
 	ans := answer.Data[0]
-
+	fmt.Print("zqz")
 	row := i / p.M
 	interm := MatrixMul(H, secret)
+	fmt.Print("zqz2")
 	ans.MatrixSub(interm)
-
+	fmt.Print("zqz1")
 	var vals []uint64
 	// Recover each Z_p element that makes up the desired database entry
 	for j := row * info.Ne; j < (row+1)*info.Ne; j++ {
+		fmt.Print("-")
 		noised := ans.Data[j]
+		fmt.Print("a", uint64(noised))
 		denoised := p.Round(uint64(noised))
+		fmt.Print("d", denoised)
 		vals = append(vals, denoised)
-		//fmt.Printf("Reconstructing row %d: %d\n", j, denoised)
-	}
-	ans.MatrixAdd(interm)
 
+		fmt.Printf("Reconstructing row %d: %d\n", j, denoised)
+	}
+	fmt.Print("zz")
+	ans.MatrixAdd(interm)
+	fmt.Print("mips64p32le")
 	return ReconstructElem(vals, i, info)
 }
 

@@ -16,4 +16,5 @@ import (
 // Init init dal
 func Init() {
 	db.Init() // mysql init
+	db.GenData()
 }
