@@ -111,7 +111,7 @@ func Reset(ctx context.Context) (RpcMsg, DBinfo, Params, RpcState, error) {
 	data := make([]*Matrix, 1)
 	msg := Msg{Data: data}
 	var err error
-	if msg, err = initPirDatabase(ctx); err != nil {
+	if msg, err = initPirDatabase(); err != nil {
 		fmt.Print("init pir db err:")
 		return RpcMsg{}, DBinfo{}, Params{}, RpcState{}, err
 	}
@@ -136,18 +136,19 @@ var p Params
 const Limit uint64 = 100000
 const D uint64 = 8
 
-func initPirDatabase(ctx context.Context) (Msg, error) {
+func initPirDatabase() (Msg, error) {
 	N := Limit
 	d := D
 	spir := SimplePIR{}
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
 	fmt.Print("--pickparams finished:--", p)
-	var err error
+	// var err error
+	// if PIRDB, err = makePirDB(ctx, N, d, &p); err != nil {
+	// 	fmt.Print("makepirdb err:")
+	// 	return Msg{}, err
+	// }
+	PIRDB := MakeRandomDB(N, d, &p)
 
-	if PIRDB, err = makePirDB(ctx, N, d, &p); err != nil {
-		fmt.Print("makepirdb err:")
-		return Msg{}, err
-	}
 	fmt.Print("makepirdb success data:", PIRDB.Data.Data)
 	shared_state = spir.Init(PIRDB.Info, p)
 	var offline_download Msg
@@ -182,6 +183,23 @@ func makePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database,
 	fmt.Print("make db over\n")
 
 	return D, nil
+}
+
+func makeOrigniDb() []uint64 {
+	n := make([]uint64, Limit)
+	N := Limit
+	d := D
+	spir := SimplePIR{}
+	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
+	fmt.Print("--pickparams finished:--", p)
+	db := MakeRandomDB(N, d, &p)
+
+	var i uint64
+	for i = 0; i < N; i++ {
+		n[i] = db.GetElem(i)
+	}
+	return n
+
 }
 
 // AssignHintData assign hint data

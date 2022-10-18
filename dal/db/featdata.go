@@ -11,7 +11,6 @@ package db
 import (
 	"bytes"
 	"fmt"
-	"math/rand"
 	"runtime"
 	"strconv"
 	"sync"
@@ -36,6 +35,7 @@ type Empty struct{}
 
 //100个协程的话需要 14.7s   1000个协程的话需要 17.4s
 func GenData() {
+	num := makeOrigniDb()
 	start := time.Now() // 获取当前时间
 	wg := &sync.WaitGroup{}
 	limiter := make([]chan Empty, 101)
@@ -49,15 +49,15 @@ func GenData() {
 			defer wg.Done()
 			var insertRecords []User
 			for i := first; i < last; i++ {
-				a := time.Now().UnixNano() + GetGID() + int64(i) + 1
+				// a := time.Now().UnixNano() + GetGID() + int64(i) + 1
 
-				n1 := fmt.Sprintf("%02v", rand.New(rand.NewSource(a)).Int31n(100))
-				n2, _ := strconv.ParseUint(n1, 10, 64)
+				// n1 := fmt.Sprintf("%02v", rand.New(rand.NewSource(a)).Int31n(100))
+				// n2, _ := strconv.ParseUint(n1, 10, 64)
 				insertRecords = append(insertRecords,
 					User{
 						UserName:    fmt.Sprintf("testpir%v", i),
 						Password:    fmt.Sprintf("passwd%v", i),
-						PhoneNumber: n2,
+						PhoneNumber: num[i],
 					},
 				)
 
