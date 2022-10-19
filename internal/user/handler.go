@@ -11,7 +11,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
@@ -101,9 +100,7 @@ func (s *UserSrvImpl) Login(ctx context.Context, req *user.DouyinUserRegisterReq
 func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *user.DouyinUserRefreshResponse, err error) {
 	// data := &db.RpcMatrix{}
 	// hint := db.RpcMsg{Data: data}
-	fmt.Print("1!")
 	hint, dbinfo, params, state, err := command.NewRefreshUserService(ctx).Refresh(req)
-	fmt.Print("hint cols rows:", hint.Data.Cols, hint.Data.Rows)
 
 	if err != nil {
 		resp = pack.BuilduserRefreshResp(err)
@@ -112,13 +109,10 @@ func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRe
 	resp = pack.BuilduserRefreshResp(errno.Success)
 	nums := hint.Data.Cols * hint.Data.Rows
 	resp.Data.Data = make([]uint64, nums)
-	fmt.Print("nums:", nums)
 
 	resp.Data.Cols = hint.Data.Cols
 	resp.Data.Rows = hint.Data.Rows
 	copy(resp.Data.Data, hint.Data.Data)
-
-	fmt.Print("refresh resp:", resp.Data.Data[0], resp.Data.Data[10])
 
 	resp.ShareState = assignState(&state)
 	resp.DbInfo = assignDbInfo(&dbinfo)
@@ -130,15 +124,11 @@ func (s *UserSrvImpl) Refresh(ctx context.Context, req *user.DouyinUserRefreshRe
 func assignState(u *db.RpcState) *user.State {
 	sharedState := &user.State{}
 	m := &db.RpcMatrix{}
-	fmt.Print("qw")
 	lens := len(u.Data.Data)
-	fmt.Print(lens)
 	m.Data = make([]uint64, lens)
 	m.Cols = u.Data.Cols
 	m.Rows = u.Data.Rows
-	fmt.Print("rr")
 	copy(m.Data, u.Data.Data)
-	fmt.Print("gt")
 	sharedState.Cols = m.Cols
 	sharedState.Rows = m.Rows
 	sharedState.Data = m.Data
@@ -176,19 +166,15 @@ func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRe
 		return resp, nil
 	}
 
-	hint, err := command.NewQueryUserService(ctx).QueryPhoneNumber(req)
+	hint, err := command.NewQueryUserService(ctx).QueryMoney(req)
 	resp = pack.BuilduserQueryResp(errno.Success)
-	fmt.Print(999)
 	nums := hint.Data.Cols * hint.Data.Rows
-	fmt.Print(nums)
 	resp.Ans.Data = make([]uint64, nums)
-	fmt.Print("nums:", nums)
 
 	resp.Ans.Cols = hint.Data.Cols
 	resp.Ans.Rows = hint.Data.Rows
 	copy(resp.Ans.Data, hint.Data.Data)
 
-	fmt.Print("refresh resp:", resp.Ans.Data[0])
 	if err != nil {
 		resp = pack.BuilduserQueryResp(err)
 		return resp, nil

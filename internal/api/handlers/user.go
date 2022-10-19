@@ -14,7 +14,6 @@ package handlers
 import "C"
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -71,32 +70,23 @@ func Login(c *gin.Context) {
 }
 
 func Refresh(c *gin.Context) {
-	fmt.Print("--handlersUserRefresh--")
 	respon, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
 
-	fmt.Print(respon.Data.Data[0])
 	hint = RpcMsg{}
 	hint.Data = &RpcMatrix{}
 	nums := respon.Data.Cols * respon.Data.Rows
 	hint.Data.Data = make([]uint64, nums)
-	fmt.Print("--2--", nums)
 	hint.Data.Cols = respon.Data.Cols
-	fmt.Print("--3--")
 	hint.Data.Rows = respon.Data.Rows
 	copy(hint.Data.Data, respon.Data.Data)
-	fmt.Print("--4--")
 
 	assignState(respon.ShareState)
-	fmt.Print("--5--")
 	assignDbInfo(respon.DbInfo)
-	fmt.Print("--6--")
 	assignParams(respon.Params)
 
-	fmt.Print("--7--")
-	error_type := "成功"
+	error_type := "刷新成功，已重新获取提示"
 	if err != nil {
-		fmt.Print(err)
-		error_type = ""
+		error_type = "刷新失败"
 
 	}
 	c.HTML(http.StatusOK, "pir.html", gin.H{
@@ -107,15 +97,11 @@ func Refresh(c *gin.Context) {
 func assignState(u *user.State) {
 	sharedState = &RpcState{}
 	m := &RpcMatrix{}
-	fmt.Print("--aggignState--")
 	lens := len(u.Data)
-	fmt.Print(lens)
 	m.Data = make([]uint64, lens)
 	m.Cols = u.Cols
 	m.Rows = u.Rows
-	fmt.Print("--2--")
 	copy(m.Data, u.Data)
-	fmt.Print("--3--")
 	sharedState.Data = m
 }
 
@@ -156,30 +142,17 @@ var dbInfo *DBinfo
 
 func QueryUser(c *gin.Context) {
 	var query *RpcMsg
-	// N := db.Limit
-	// d := uint64(8)
-	// p := pi.PickParams(N, d, db.SEC_PARAM, db.LOGQ)
-	// fmt.Print("params:", p)
 
-	// D := db.SetupDB(N, d, &p)
-	// shared_state := pi.Init(D.Info, p)
-	// fmt.Print("ss")
 	pi := &SimplePIR{}
 	var QueryVar UserQueryParam
-	QueryVar.PhoneNumber = c.PostForm("phone-number")
-	fmt.Print("--handlersUserQueryUser--", QueryVar.PhoneNumber)
-	q, _ := strconv.Atoi(QueryVar.PhoneNumber)
-	index_to_query := uint64(q)
+	QueryVar.Money = c.PostForm("money")
+	q, _ := strconv.Atoi(QueryVar.Money)
+	index_to_query := uint64(q) + 1
 
-	fmt.Print("--2--")
 	sstate := RpcState2State(sharedState)
-	fmt.Print("--3--")
 	client, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
-	fmt.Print("--4--")
 	query = Msg2RpcMsg(&msg)
-	fmt.Print("--5--")
 	queryData := Matrix2UserMatrix(query.Data)
-	fmt.Print("--6--")
 	resp, _ := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
@@ -188,20 +161,13 @@ func QueryUser(c *gin.Context) {
 	as.Data = &RpcMatrix{}
 	nums := resp.Ans.Cols * resp.Ans.Rows
 	as.Data.Data = make([]uint64, nums)
-	fmt.Print("--7--", nums)
 	as.Data.Cols = resp.Ans.Cols
-	fmt.Print("--8--")
 	as.Data.Rows = resp.Ans.Rows
 	copy(as.Data.Data, resp.Ans.Data)
-	fmt.Print("--9--")
 	ass := RpcMsg2Msg(as)
-	fmt.Print("--10--")
 	download := RpcMsg2Msg(&hint)
-	fmt.Print("--11--")
-	fmt.Print(index_to_query, download.size, ass.size, client.Data[0].Rows, p, dbInfo)
 	val := pi.Recover(index_to_query, 0, *download, *ass,
 		client, *p, *dbInfo)
-	fmt.Print("val", val)
 	var error_type string
 
 	error_type = strconv.Itoa(int(val))
@@ -215,79 +181,56 @@ func QueryUser(c *gin.Context) {
 func Msg2RpcMsg(m *Msg) *RpcMsg {
 	a := &RpcMatrix{}
 
-	fmt.Print("--handlersUserMsg2Rpcmsg--lenData:", len(m.Data))
-
-	fmt.Print("--2--")
-
 	a.Cols = m.Data[0].Cols
 	a.Rows = m.Data[0].Rows
-	fmt.Print("--3--")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
-	fmt.Print("--4--")
 	for i := 0; i < lend; i++ {
 		a.Data[i] = uint64(m.Data[0].Data[i])
 	}
-	fmt.Print("--5--")
 	r := &RpcMsg{Data: a}
 	return r
 }
 
 func RpcState2State(r *RpcState) *State {
-	fmt.Print("--handlerUserRpcsta2sta--")
 	s := make([]*Matrix, 1)
 	a := &Matrix{}
 	lens := len(r.Data.Data)
-	fmt.Print("lens:", lens)
 	a.Data = make([]C.Elem, lens)
 	a.Cols = r.Data.Cols
 	a.Rows = r.Data.Rows
-	fmt.Print("--2--")
 	for k, v := range r.Data.Data {
 		a.Data[k] = C.Elem(v)
 	}
-	fmt.Print("--3--")
 	s[0] = a
 	ans := &State{}
-	fmt.Print("--4--")
 	ans.Data = s
-	fmt.Print("--5--")
 	return ans
 }
 
 func RpcMsg2Msg(r *RpcMsg) *Msg {
-	fmt.Print("--handlerUserRpcmsg2msg--")
 	s := make([]*Matrix, 1)
 	a := &Matrix{}
 	lens := len(r.Data.Data)
-	fmt.Print("lens:", lens)
 	a.Data = make([]C.Elem, lens)
-	fmt.Print("alloc over!")
 	a.Cols = r.Data.Cols
 	a.Rows = r.Data.Rows
-	fmt.Print("--2--")
 	for k, v := range r.Data.Data {
 		a.Data[k] = C.Elem(v)
 	}
-	fmt.Print("--3--")
 	s[0] = a
 	ans := &Msg{}
-	fmt.Print("--4--")
 	ans.Data = s
-	fmt.Print("--5--")
 	return ans
 }
 
 func Matrix2UserMatrix(r *RpcMatrix) *user.Matrix {
 	q := &user.Matrix{}
-	fmt.Print("handlersUserMatrix2UserMatrix--")
 	q.Data = make([]uint64, len(r.Data))
-	fmt.Print("--2--")
 	q.Cols = r.Cols
 	q.Rows = r.Rows
 
 	copy(q.Data, r.Data)
-	fmt.Print("--3--")
 	return q
 }
 

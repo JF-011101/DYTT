@@ -27,7 +27,7 @@ type UserRegisterParam struct {
 
 // 查询用户号码是否存在
 type UserQueryParam struct {
-	PhoneNumber string `json:"phone_number"`
+	Money string `json:"phone_number"`
 }
 
 // 用户信息 输出参数

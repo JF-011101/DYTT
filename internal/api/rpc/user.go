@@ -39,7 +39,7 @@ func initUserRpc(Config *ttviper.Config) {
 	EtcdResolver := discovery.NewResolver([]string{EtcdAddress}, ilog.New())
 	resolver.Register(EtcdResolver)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
-	fmt.Print("etcd rig over")
+	fmt.Print("etcd rig over\n")
 
 	// init tlsClient and token
 	tlsClient := gtls.Client{
@@ -101,7 +101,6 @@ func Refresh(ctx context.Context, req *user.DouyinUserRefreshRequest) (resp *use
 
 func QueryUser(ctx context.Context, req *user.DouyinUserQueryRequest) (resp *user.DouyinUserQueryResponse, err error) {
 	resp, err = userClient.QueryUser(ctx, req)
-	fmt.Print("get resp")
 	if err != nil {
 		return nil, err
 	}

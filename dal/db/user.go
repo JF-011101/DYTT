@@ -17,9 +17,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-	"runtime"
 	"strconv"
-	"time"
 
 	"github.com/jf-011101/dytt/grpc_gen/user"
 	"gorm.io/gorm"
@@ -30,7 +28,7 @@ type User struct {
 	gorm.Model
 	UserName       string  `gorm:"index:idx_username,unique;type:varchar(40);not null" json:"username"`
 	Password       string  `gorm:"type:varchar(256);not null" json:"password"`
-	PhoneNumber    uint64  `gorm:"not null" json:"phonenumber"`
+	Money          uint64  `gorm:"not null" json:"money"`
 	FavoriteVideos []Video `gorm:"many2many:user_favorite_videos" json:"favorite_videos"`
 	FollowingCount int     `gorm:"default:0" json:"following_count"`
 	FollowerCount  int     `gorm:"default:0" json:"follower_count"`
@@ -78,33 +76,24 @@ func QueryUser(ctx context.Context, username string) ([]*User, error) {
 	return res, nil
 }
 
-// QueryPhoneNumber query a number in the db by pir
-func QueryPhoneNumber(ctx context.Context, phoneNumber *user.Matrix) (RpcMsg, error) {
+// QueryMoney query a number in the db by pir
+func QueryMoney(ctx context.Context, money *user.Matrix) (RpcMsg, error) {
 	var query MsgSlice
 	query.Data = make([]Msg, 1)
 	query.Data[0].Data = make([]*Matrix, 1)
 	a := &Matrix{}
-	lens := len(phoneNumber.Data)
-	fmt.Print("--dbuserQueryPhoneNumber--")
+	lens := len(money.Data)
 	a.Data = make([]C.Elem, lens)
 	var pi SimplePIR
-	fmt.Print("--2--")
-	a.Cols = phoneNumber.Cols
-	a.Rows = phoneNumber.Rows
-	fmt.Print("--3--")
-	for k, v := range phoneNumber.Data {
+	a.Cols = money.Cols
+	a.Rows = money.Rows
+	for k, v := range money.Data {
 		a.Data[k] = C.Elem(v)
 	}
 	query.Data[0].Data[0] = a
-	fmt.Print("--4--")
 	answer := pi.Answer(PIRDB, query, server_state, shared_state, p)
-	fmt.Print("ans-size:", answer.size())
 	rpcmsg := Msg2RpcMsg(&answer)
-	fmt.Print("--5--")
 
-	// if err := DB.WithContext(ctx).Where("phone_number = ?", phoneNumber).Find(&res).Error; err != nil {
-	// 	return nil, err
-	// }
 	return *rpcmsg, nil
 }
 
@@ -115,14 +104,11 @@ func Reset(ctx context.Context) (RpcMsg, DBinfo, Params, RpcState, error) {
 	msg := Msg{Data: data}
 	var err error
 	if msg, err = initPirDatabase(); err != nil {
-		fmt.Print("init pir db err:")
 		return RpcMsg{}, DBinfo{}, Params{}, RpcState{}, err
 	}
-	fmt.Print("reset success", msg.size())
 	rpcmsg := Msg2RpcMsg(&msg)
 	rpcstate := State2RpcState(&shared_state)
 
-	fmt.Print("ansmsg:", rpcmsg.Data.Cols, rpcmsg.Data.Rows, rpcmsg.Data.Data[0], rpcmsg.Data.Data[10])
 	return *rpcmsg, PIRDB.Info, p, *rpcstate, nil
 
 }
@@ -144,12 +130,7 @@ func initPirDatabase() (Msg, error) {
 	d := D
 	spir := SimplePIR{}
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
-	fmt.Print("--pickparams finished:--", p)
-	// var err error
-	// if PIRDB, err = makePirDB(ctx, N, d, &p); err != nil {
-	// 	fmt.Print("makepirdb err:")
-	// 	return Msg{}, err
-	// }
+
 	PIRDB = MakeRandomDB(N, d, &p)
 
 	// read from data.txt
@@ -168,17 +149,14 @@ func initPirDatabase() (Msg, error) {
 		PIRDB.Data.Data[i] = C.Elem(a)
 	}
 
-	fmt.Print("makepirdb success data:", PIRDB.Data.Data[0])
 	shared_state = spir.Init(PIRDB.Info, p)
 	var offline_download Msg
 	server_state, offline_download = spir.Setup(PIRDB, shared_state, p)
-	fmt.Print("w", shared_state)
 	return offline_download, nil
 }
 
 func makePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database, error) {
 	D := SetupDB(N, row_length, p)
-	fmt.Print("--pirdbinfo--:", D.Info)
 	//D.Data = pir.MatrixRand(p.l, p.m, 0, p.p)
 
 	// Map DB elems to [-p/2; p/2]
@@ -190,11 +168,8 @@ func makePirDB(ctx context.Context, N, row_length uint64, p *Params) (*Database,
 
 	result := DB.Model(&user).Limit(int(Limit)).Select("phone_number").Where("id > ?", id).Find(&m)
 
-	fmt.Print(result.Error)        // returned error
-	fmt.Print(result.RowsAffected) // processed records count in all batches
-	fmt.Print("origin data:", m[0], m[10])
+	fmt.Print("rows affected:", result.RowsAffected) // processed records count in all batches
 	D.Data = MatrixNew(p.L, p.M)
-	fmt.Print("1")
 	//D.Data.Data[0] = C.Elem(m[0])
 	for k, v := range m {
 		D.Data.Data[k] = C.Elem(v)
@@ -210,7 +185,6 @@ func makeOrigniDb() []uint64 {
 	d := D
 	spir := SimplePIR{}
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
-	fmt.Print("--pickparams finished:--", p)
 	PIRDB = MakeRandomDB(N, d, &p)
 
 	flog, err := os.OpenFile("data.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
@@ -246,15 +220,8 @@ func AssignHintData(m *RpcMatrix, d []uint64) *RpcMatrix {
 }
 func State2RpcState(m *State) *RpcState {
 	a := &RpcMatrix{}
-
-	fmt.Print("--dbUserSta2RpcSta--", len(m.Data))
-
-	lens := len(m.Data)
-	fmt.Print("--2--", lens)
-
 	a.Cols = m.Data[0].Cols
 	a.Rows = m.Data[0].Rows
-	fmt.Print("--3--")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
 	for i := 0; i < lend; i++ {
@@ -264,10 +231,6 @@ func State2RpcState(m *State) *RpcState {
 	// for i, o := range m.Data[0].Data {
 	// 	a.Data[i] = uint64(o)
 	// }
-	start2 := time.Now()
-	runtime.GC()
-	fmt.Printf("GC took %s\n", time.Since(start2))
-
 	r := &RpcState{Data: a}
 	return r
 }
@@ -276,26 +239,13 @@ func State2RpcState(m *State) *RpcState {
 func Msg2RpcMsg(m *Msg) *RpcMsg {
 	a := &RpcMatrix{}
 
-	fmt.Print("--dbUserMsg2RpcMsg--", len(m.Data))
-
-	lens := len(m.Data)
-	fmt.Print("--2--", lens)
-
 	a.Cols = m.Data[0].Cols
 	a.Rows = m.Data[0].Rows
-	fmt.Print("--3--")
 	lend := len(m.Data[0].Data)
 	a.Data = make([]uint64, lend)
 	for i := 0; i < lend; i++ {
 		a.Data[i] = uint64(m.Data[0].Data[i])
 	}
-
-	// for i, o := range m.Data[0].Data {
-	// 	a.Data[i] = uint64(o)
-	// }
-	start2 := time.Now()
-	runtime.GC()
-	fmt.Printf("GC took %s\n", time.Since(start2))
 
 	r := &RpcMsg{Data: a}
 	return r

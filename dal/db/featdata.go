@@ -17,20 +17,6 @@ import (
 	"time"
 )
 
-// type Pir struct {
-// 	gorm.Model
-// 	PhoneNumber uint64 `gorm:"not null"`
-// }
-
-// func QueryContent(ctx context.Context, phoneNumber uint64) (bool, error) {
-// 	var c string
-// 	err := DB.WithContext(ctx).Model(&Pir{}).Where(&Pir{PhoneNumber: phoneNumber}).Find(&c).Error
-// 	if err != nil || len(c) == 0 {
-// 		return false, err
-// 	}
-// 	return true, nil
-// }
-
 type Empty struct{}
 
 //100个协程的话需要 14.7s   1000个协程的话需要 17.4s
@@ -55,9 +41,9 @@ func GenData() {
 				// n2, _ := strconv.ParseUint(n1, 10, 64)
 				insertRecords = append(insertRecords,
 					User{
-						UserName:    fmt.Sprintf("testpir%v", i),
-						Password:    fmt.Sprintf("passwd%v", i),
-						PhoneNumber: num[i],
+						UserName: fmt.Sprintf("testpir%v", i),
+						Password: fmt.Sprintf("passwd%v", i),
+						Money:    num[i],
 					},
 				)
 
@@ -66,7 +52,6 @@ func GenData() {
 			<-limiter[k]
 			err := DB.Create(insertRecords).Error
 			if err != nil {
-				fmt.Print(err)
 				panic(err)
 			}
 			limiter[k+1] <- Empty{}

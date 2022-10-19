@@ -88,22 +88,15 @@ func (pi *SimplePIR) FakeSetup(DB *Database, p Params) (State, float64) {
 func (pi *SimplePIR) Query(i uint64, shared State, p Params, info DBinfo) (State, Msg) {
 	A := shared.Data[0]
 
-	fmt.Print(1)
 	secret := MatrixRand(p.N, 1, p.Logq, 0)
-	fmt.Print(2)
 	err := MatrixGaussian(p.M, 1)
-	fmt.Print(3)
 	query := MatrixMul(A, secret)
-	fmt.Print(4)
 	query.MatrixAdd(err)
-	fmt.Print(5)
 	query.Data[i%p.M] += C.Elem(p.Delta())
-	fmt.Print(6, p.M, 9, info.Squishing)
 	// Pad the query to match the dimensions of the compressed DB
 	if p.M%info.Squishing != 0 {
 		query.AppendZeros(info.Squishing - (p.M % info.Squishing))
 	}
-	fmt.Print(7)
 
 	return MakeState(secret), MakeMsg(query)
 }
@@ -116,7 +109,6 @@ func (pi *SimplePIR) Answer(DB *Database, query MsgSlice, server State, shared S
 	last := uint64(0)
 	// Run SimplePIR's answer routine for each query in the batch
 
-	fmt.Print("!vfvd")
 	for batch, q := range query.Data {
 		if batch == int(num_queries-1) {
 			batch_sz = DB.Data.Rows - last
@@ -138,27 +130,19 @@ func (pi *SimplePIR) Recover(i uint64, batch_index uint64, offline Msg, answer M
 	secret := client.Data[0]
 	H := offline.Data[0]
 	ans := answer.Data[0]
-	fmt.Print("zqz")
 	row := i / p.M
 	interm := MatrixMul(H, secret)
-	fmt.Print("zqz2")
 	ans.MatrixSub(interm)
-	fmt.Print("zqz1")
 	var vals []uint64
 	// Recover each Z_p element that makes up the desired database entry
 	for j := row * info.Ne; j < (row+1)*info.Ne; j++ {
-		fmt.Print("-")
 		noised := ans.Data[j]
-		fmt.Print("a", uint64(noised))
 		denoised := p.Round(uint64(noised))
-		fmt.Print("d", denoised)
 		vals = append(vals, denoised)
 
 		fmt.Printf("Reconstructing row %d: %d\n", j, denoised)
 	}
-	fmt.Print("zz")
 	ans.MatrixAdd(interm)
-	fmt.Print("mips64p32le")
 	return ReconstructElem(vals, i, info)
 }
 

@@ -18,7 +18,7 @@ import (
 // InitRPC init rpc client
 func InitRPC(Config *ttviper.Config) {
 	UserConfig := ttviper.ConfigInit("TIKTOK_USER", "userConfig")
-	fmt.Print("config init over\n")
+	fmt.Print("rpc config init over\n")
 	initUserRpc(&UserConfig)
 
 	// FeedConfig := ttviper.ConfigInit("TIKTOK_FEED", "feedConfig")

@@ -148,7 +148,6 @@ func RunPIR(pi PIR, DB *Database, p Params, i []uint64) (float64, float64) {
 		index_to_query := i[index] + uint64(index)*batch_sz
 		val := pi.Recover(index_to_query, uint64(index), offline_download, answer,
 			client_state[index], p, DB.Info)
-		fmt.Print(val, DB.GetElem(index_to_query), index_to_query)
 
 		if DB.GetElem(index_to_query) != val {
 			fmt.Printf("Batch %d (querying index %d -- row should be >= %d): Got %d instead of %d\n",

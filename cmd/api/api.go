@@ -37,9 +37,7 @@ var (
 )
 
 func main() {
-	fmt.Print("begin\n")
 	rpc.InitRPC(&Config)
-	fmt.Print("initrpc over")
 
 	r := gin.New()
 	r.Static("/static", "static")
