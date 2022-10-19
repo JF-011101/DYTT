@@ -147,7 +147,7 @@ func initPirDatabase() (Msg, error) {
 	// 	fmt.Print("makepirdb err:")
 	// 	return Msg{}, err
 	// }
-	PIRDB := MakeRandomDB(N, d, &p)
+	PIRDB = MakeRandomDB(N, d, &p)
 
 	fmt.Print("makepirdb success data:", PIRDB.Data.Data)
 	shared_state = spir.Init(PIRDB.Info, p)
