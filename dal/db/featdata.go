@@ -86,3 +86,7 @@ func GetGID() int64 {
 	n, _ := strconv.ParseInt(string(b), 10, 64)
 	return n
 }
+
+func GenMemoryData() error {
+	return nil
+}

@@ -14,8 +14,11 @@ package db
 import "C"
 import (
 	"context"
+	"encoding/csv"
 	"fmt"
+	"os"
 	"runtime"
+	"strconv"
 	"time"
 
 	"github.com/jf-011101/dytt/grpc_gen/user"
@@ -149,7 +152,23 @@ func initPirDatabase() (Msg, error) {
 	// }
 	PIRDB = MakeRandomDB(N, d, &p)
 
-	fmt.Print("makepirdb success data:", PIRDB.Data.Data)
+	// read from data.txt
+	flog, err := os.OpenFile("data.txt", os.O_RDONLY, 0777)
+	if err != nil {
+		panic("Error creating data file")
+	}
+	defer flog.Close()
+	reader := csv.NewReader(flog)
+	num := PIRDB.Data.Rows * PIRDB.Data.Cols
+	s := make([]string, num)
+	s, err = reader.Read()
+	var i uint64
+	for i = 0; i < num; i++ {
+		a, _ := strconv.Atoi(s[i])
+		PIRDB.Data.Data[i] = C.Elem(a)
+	}
+
+	fmt.Print("makepirdb success data:", PIRDB.Data.Data[0])
 	shared_state = spir.Init(PIRDB.Info, p)
 	var offline_download Msg
 	server_state, offline_download = spir.Setup(PIRDB, shared_state, p)
@@ -192,11 +211,27 @@ func makeOrigniDb() []uint64 {
 	spir := SimplePIR{}
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
 	fmt.Print("--pickparams finished:--", p)
-	db := MakeRandomDB(N, d, &p)
+	PIRDB = MakeRandomDB(N, d, &p)
+
+	flog, err := os.OpenFile("data.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
+	if err != nil {
+		panic("Error creating log file")
+	}
+	defer flog.Close()
+
+	writer := csv.NewWriter(flog)
+	defer writer.Flush()
+
+	s := make([]string, len(PIRDB.Data.Data))
+
+	for k, v := range PIRDB.Data.Data {
+		s[k] = strconv.FormatUint(uint64(v), 10)
+	}
+	writer.Write(s)
 
 	var i uint64
 	for i = 0; i < N; i++ {
-		n[i] = db.GetElem(i)
+		n[i] = PIRDB.GetElem(i)
 	}
 	return n
 

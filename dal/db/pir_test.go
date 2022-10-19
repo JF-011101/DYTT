@@ -96,6 +96,33 @@ func TestSimplePirBW(t *testing.T) {
 	pir.GetBW(DB.Info, p)
 }
 
+func TestGenData(t *testing.T) {
+	N := uint64(10)
+	d := uint64(8)
+	pir := SimplePIR{}
+	p := pir.PickParams(N, d, SEC_PARAM_T, LOGQ_T)
+	t.Log(p)
+
+	DB := MakeRandomDB(N, d, &p)
+	flog, err := os.OpenFile("data.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic("Error creating log file")
+	}
+	defer flog.Close()
+
+	writer := csv.NewWriter(flog)
+	defer writer.Flush()
+
+	//records := []string{"N", "d", "tput", "tput_stddev", "offline_comm", "online_comm"}
+	s := make([]string, len(DB.Data.Data))
+
+	for k, v := range DB.Data.Data {
+		s[k] = strconv.FormatUint(uint64(v), 10)
+	}
+	writer.Write(s)
+
+}
+
 // Test SimplePIR correctness on DB with short entries.
 func TestSimplePir(t *testing.T) {
 	N := uint64(10)
