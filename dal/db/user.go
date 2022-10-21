@@ -187,7 +187,7 @@ func makeOrigniDb() []uint64 {
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
 	PIRDB = MakeRandomDB(N, d, &p)
 
-	flog, err := os.OpenFile("data.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
+	flog, err := os.OpenFile("data.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0777)
 	if err != nil {
 		panic("Error creating log file")
 	}

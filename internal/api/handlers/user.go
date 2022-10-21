@@ -145,7 +145,7 @@ func QueryUser(c *gin.Context) {
 
 	pi := &SimplePIR{}
 	var QueryVar UserQueryParam
-	QueryVar.Money = c.PostForm("money")
+	QueryVar.Money = c.PostForm("uid")
 	q, _ := strconv.Atoi(QueryVar.Money)
 	index_to_query := uint64(q) + 1
 
@@ -170,7 +170,7 @@ func QueryUser(c *gin.Context) {
 		client, *p, *dbInfo)
 	var error_type string
 
-	error_type = strconv.Itoa(int(val))
+	error_type = strconv.Itoa(int(val)) + "元"
 
 	c.HTML(http.StatusOK, "pir.html", gin.H{
 		"error_type": error_type,

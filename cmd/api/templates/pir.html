@@ -84,15 +84,15 @@
       <div class="login-header text-center">
         <a> <img alt="HIT" src="static/images/pir1.png"> </a>
       </div>
-      <form name="money" method="post">
+      <form name="uid" method="post">
         <div class="form-group has-feedback feedback-left">
-          <input type="text" placeholder="用户号" class="form-control" name="money" id="money" />
+          <input type="text" placeholder="用户号" class="form-control" name="uid" id="uid" />
           <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
         </div>
    
         <div class="form-group"> 
           <a style="color: red;">{{.error_type}}</a>
-          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir/query';javascript:this.form.method='post'">查询是否存在</button>
+          <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir/query';javascript:this.form.method='post'">安全地查询该用户的余额</button>
           <button class="btn btn-block btn-primary" type="submit" onclick="javascript:this.form.action='/pir/refresh';javascript:this.form.method='post'">刷新</button>
         </div>
        
