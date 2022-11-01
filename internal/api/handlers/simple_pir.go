@@ -140,7 +140,7 @@ func (pi *SimplePIR) Recover(i uint64, batch_index uint64, offline Msg, answer M
 		denoised := p.Round(uint64(noised))
 		vals = append(vals, denoised)
 
-		fmt.Printf("Reconstructing row %d: %d\n", j, denoised)
+		//fmt.Printf("Reconstructing row %d: %d\n", j, denoised)
 	}
 	ans.MatrixAdd(interm)
 	return ReconstructElem(vals, i, info)

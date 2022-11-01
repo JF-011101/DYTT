@@ -14,10 +14,11 @@ package handlers
 import "C"
 import (
 	"context"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
+	"time"
 
 	"github.com/jf-011101/dytt/dal/pack"
 	"github.com/jf-011101/dytt/grpc_gen/user"
@@ -70,8 +71,11 @@ func Login(c *gin.Context) {
 }
 
 func Refresh(c *gin.Context) {
+	fmt.Printf("%v\nrefresh begin...\n", time.Now())
+	begin1 := time.Now()
 	respon, err := rpc.Refresh(context.Background(), &user.DouyinUserRefreshRequest{})
-
+	t1 := time.Since(begin1)
+	fmt.Printf("get refresh resp. It takes %02v ", t1)
 	hint = RpcMsg{}
 	hint.Data = &RpcMatrix{}
 	nums := respon.Data.Cols * respon.Data.Rows
@@ -83,7 +87,8 @@ func Refresh(c *gin.Context) {
 	assignState(respon.ShareState)
 	assignDbInfo(respon.DbInfo)
 	assignParams(respon.Params)
-
+	fmt.Printf("refresh success!\n")
+	fmt.Printf("hint.Data.Cols=%d,  hint.Data.Rows=%d\n", hint.Data.Cols, hint.Data.Rows)
 	error_type := "刷新成功，已重新获取提示"
 	if err != nil {
 		error_type = "刷新失败"
@@ -147,16 +152,22 @@ func QueryUser(c *gin.Context) {
 	var QueryVar UserQueryParam
 	QueryVar.Money = c.PostForm("uid")
 	q, _ := strconv.Atoi(QueryVar.Money)
-	index_to_query := uint64(q) + 1
+	index_to_query := uint64(q)
+	fmt.Printf("%v \nindex_to_query:%d\n", time.Now(), index_to_query)
 
 	sstate := RpcState2State(sharedState)
 	client, msg := pi.Query(index_to_query, *sstate, *p, *dbInfo)
+	comm := float64(msg.size() * uint64(p.Logq) / (8.0 * 1024.0))
+	fmt.Printf("\t\tOnline upload: %f KB\n", comm)
 	query = Msg2RpcMsg(&msg)
 	queryData := Matrix2UserMatrix(query.Data)
+	begin1 := time.Now()
 	resp, _ := rpc.QueryUser(context.Background(), &user.DouyinUserQueryRequest{
 		QueryData: queryData,
 	})
-
+	t1 := time.Since(begin1)
+	fmt.Printf("received ans from server! It takes %02v\n", t1)
+	fmt.Printf("ans.Data.Cols=%d,ans.Data.Rows=%d\n", resp.Ans.Cols, resp.Ans.Rows)
 	as := &RpcMsg{}
 	as.Data = &RpcMatrix{}
 	nums := resp.Ans.Cols * resp.Ans.Rows
@@ -166,12 +177,16 @@ func QueryUser(c *gin.Context) {
 	copy(as.Data.Data, resp.Ans.Data)
 	ass := RpcMsg2Msg(as)
 	download := RpcMsg2Msg(&hint)
+	comm = float64(ass.size() * uint64(p.Logq) / (8.0 * 1024.0))
+	fmt.Printf("\t\tOnline download: %f KB\n", comm)
+	fmt.Printf("Begin recover ans……\n")
+	begin2 := time.Now()
 	val := pi.Recover(index_to_query, 0, *download, *ass,
 		client, *p, *dbInfo)
 	var error_type string
-
+	t2 := time.Since(begin2)
 	error_type = strconv.Itoa(int(val)) + "元"
-
+	fmt.Printf("recover success! It takes %02v\n uid=%d, his money is %s\n", t2, index_to_query, error_type)
 	c.HTML(http.StatusOK, "pir.html", gin.H{
 		"error_type": error_type,
 	})

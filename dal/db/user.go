@@ -152,6 +152,9 @@ func initPirDatabase() (Msg, error) {
 	shared_state = spir.Init(PIRDB.Info, p)
 	var offline_download Msg
 	server_state, offline_download = spir.Setup(PIRDB, shared_state, p)
+
+	comm := float64(offline_download.size() * uint64(p.Logq) / (8.0 * 1024.0))
+	fmt.Printf("\t\tOffline download: %f KB\n", comm)
 	return offline_download, nil
 }
 
@@ -187,9 +190,9 @@ func makeOrigniDb() []uint64 {
 	p = spir.PickParams(N, d, SEC_PARAM, LOGQ)
 	PIRDB = MakeRandomDB(N, d, &p)
 
-	flog, err := os.OpenFile("data.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0777)
+	flog, err := os.OpenFile("data.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
 	if err != nil {
-		panic("Error creating log file")
+		panic("Error creating data file")
 	}
 	defer flog.Close()
 

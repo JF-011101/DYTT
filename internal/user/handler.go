@@ -11,6 +11,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jf-011101/dytt/dal/db"
 	"github.com/jf-011101/dytt/dal/pack"
@@ -179,7 +180,7 @@ func (s *UserSrvImpl) QueryUser(ctx context.Context, req *user.DouyinUserQueryRe
 		resp = pack.BuilduserQueryResp(err)
 		return resp, nil
 	}
-
+	fmt.Printf("resp query answer success!\n")
 	return resp, nil
 }
 
